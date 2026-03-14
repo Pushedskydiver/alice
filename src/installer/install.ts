@@ -27,7 +27,7 @@ ${red('  ╚═╝  ╚═╝╚══════╝╚═╝ ╚════�
  *
  * @returns The resolved path two levels above `__dirname`.
  */
-const getSourceRoot = (): string => resolve(__dirname, '..', '..');
+export const getSourceRoot = (): string => resolve(__dirname, '..', '..');
 
 /**
  * Returns the user's home directory from environment variables.
@@ -35,7 +35,7 @@ const getSourceRoot = (): string => resolve(__dirname, '..', '..');
  * @returns The home directory path.
  * @throws If neither `HOME` nor `USERPROFILE` is set.
  */
-const getHomeDir = (): string => {
+export const getHomeDir = (): string => {
   const home = process.env.HOME ?? process.env.USERPROFILE;
   if (!home) {
     throw new Error(
@@ -51,7 +51,7 @@ const getHomeDir = (): string => {
  * @param location - `'global'` for `~/.claude/`, `'local'` for `./.claude/`.
  * @returns The absolute path to the target directory.
  */
-const getTargetDir = (location: InstallLocation): string => {
+export const getTargetDir = (location: InstallLocation): string => {
   if (location === 'global') {
     return join(getHomeDir(), '.claude');
   }
@@ -65,7 +65,7 @@ const getTargetDir = (location: InstallLocation): string => {
  *
  * @param location - `'global'` or `'local'`, determines which `settings.json` to update.
  */
-const registerHooks = (location: InstallLocation): void => {
+export const registerHooks = (location: InstallLocation): void => {
   const targetDir = getTargetDir(location);
   const settingsPath = join(targetDir, 'settings.json');
 
@@ -134,7 +134,7 @@ const registerHooks = (location: InstallLocation): void => {
  * install location (or reads `--global`/`--local` flags), copies commands
  * and workflows into the target `.claude/` directory, and registers hooks.
  */
-const install = async (): Promise<void> => {
+export const install = async (): Promise<void> => {
   const version = getVersion(getSourceRoot());
 
   console.log(BANNER);
@@ -189,9 +189,14 @@ const install = async (): Promise<void> => {
   closePrompts();
 };
 
-install().catch((err: unknown) => {
-  const message = err instanceof Error ? err.message : String(err);
-  console.error(red(`❌ Failed to install: ${message}`));
-  closePrompts();
-  process.exit(1);
-});
+const isDirectRun =
+  process.argv[1] && resolve(process.argv[1]).includes('install');
+
+if (isDirectRun) {
+  install().catch((err: unknown) => {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(red(`❌ Failed to install: ${message}`));
+    closePrompts();
+    process.exit(1);
+  });
+}
