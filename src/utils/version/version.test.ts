@@ -41,4 +41,16 @@ describe('getVersion', () => {
 
     expect(getVersion(tmp)).toBe('0.0.0');
   });
+
+  it('returns 0.0.0 when version field is missing', () => {
+    writeFileSync(join(tmp, 'package.json'), JSON.stringify({ name: 'test' }));
+
+    expect(getVersion(tmp)).toBe('0.0.0');
+  });
+
+  it('returns 0.0.0 when version field is not a string', () => {
+    writeFileSync(join(tmp, 'package.json'), JSON.stringify({ version: 123 }));
+
+    expect(getVersion(tmp)).toBe('0.0.0');
+  });
 });

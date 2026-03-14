@@ -88,11 +88,13 @@ Ask:
 What board do you use?
 
 1. Jira
-2. Linear
-3. Trello
-4. GitHub Projects
-5. Other
+2. GitHub Issues
+3. Linear
+4. Other
 ```
+
+If the user selects **Other**, inform them:
+"Clancy currently supports Jira, GitHub Issues, and Linear. You may need manual setup for other boards."
 
 Store the answer as `{board}`.
 

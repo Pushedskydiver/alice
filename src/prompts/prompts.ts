@@ -69,7 +69,7 @@ export const choose = async (
   if (answer === '') return defaultIndex;
 
   const parsed = parseInt(answer, 10);
-  if (isNaN(parsed) || parsed < 1 || parsed > options.length) {
+  if (Number.isNaN(parsed) || parsed < 1 || parsed > options.length) {
     return defaultIndex;
   }
 

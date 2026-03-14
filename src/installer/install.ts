@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -30,6 +30,22 @@ ${red('  ╚═╝  ╚═╝╚══════╝╚═╝ ╚════�
 const getSourceRoot = (): string => resolve(__dirname, '..', '..');
 
 /**
+ * Returns the user's home directory from environment variables.
+ *
+ * @returns The home directory path.
+ * @throws If neither `HOME` nor `USERPROFILE` is set.
+ */
+const getHomeDir = (): string => {
+  const home = process.env.HOME ?? process.env.USERPROFILE;
+  if (!home) {
+    throw new Error(
+      'Cannot determine home directory — neither HOME nor USERPROFILE is set.',
+    );
+  }
+  return home;
+};
+
+/**
  * Resolves the target `.claude/` directory based on install location.
  *
  * @param location - `'global'` for `~/.claude/`, `'local'` for `./.claude/`.
@@ -37,8 +53,7 @@ const getSourceRoot = (): string => resolve(__dirname, '..', '..');
  */
 const getTargetDir = (location: InstallLocation): string => {
   if (location === 'global') {
-    const home = process.env.HOME ?? process.env.USERPROFILE ?? '';
-    return join(home, '.claude');
+    return join(getHomeDir(), '.claude');
   }
   return join(process.cwd(), '.claude');
 };
@@ -51,14 +66,8 @@ const getTargetDir = (location: InstallLocation): string => {
  * @param location - `'global'` or `'local'`, determines which `settings.json` to update.
  */
 const registerHooks = (location: InstallLocation): void => {
-  const settingsPath =
-    location === 'global'
-      ? join(
-          process.env.HOME ?? process.env.USERPROFILE ?? '',
-          '.claude',
-          'settings.json',
-        )
-      : join(process.cwd(), '.claude', 'settings.json');
+  const targetDir = getTargetDir(location);
+  const settingsPath = join(targetDir, 'settings.json');
 
   const sourceRoot = getSourceRoot();
   const hooksDir = join(sourceRoot, 'hooks');
@@ -95,7 +104,7 @@ const registerHooks = (location: InstallLocation): void => {
     );
     if (!already) {
       settings.hooks.SessionStart.push({
-        command: `node ${checkUpdatePath}`,
+        command: `node "${checkUpdatePath}"`,
         type: 'command',
       });
     }
@@ -110,11 +119,14 @@ const registerHooks = (location: InstallLocation): void => {
     );
     if (!already) {
       settings.hooks.Notification.push({
-        command: `node ${contextMonitorPath}`,
+        command: `node "${contextMonitorPath}"`,
         type: 'command',
       });
     }
   }
+
+  mkdirSync(dirname(settingsPath), { recursive: true });
+  writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
 };
 
 /**
@@ -178,7 +190,8 @@ const install = async (): Promise<void> => {
 };
 
 install().catch((err: unknown) => {
-  console.error(red(`❌ Failed to install: ${String(err)}`));
+  const message = err instanceof Error ? err.message : String(err);
+  console.error(red(`❌ Failed to install: ${message}`));
   closePrompts();
   process.exit(1);
 });

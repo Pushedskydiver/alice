@@ -37,10 +37,13 @@ npm test
 | --- | --- |
 | `npm test` | Run tests |
 | `npm run dev` | Run tests in watch mode |
+| `npm run test:coverage` | Tests with v8 coverage |
 | `npm run build` | Build TypeScript |
 | `npm run typecheck` | Type check without emitting |
 | `npm run lint` | Run ESLint |
+| `npm run lint:fix` | ESLint with auto-fix |
 | `npm run format` | Format with Prettier |
+| `npm run format:check` | Check formatting without writing |
 
 ## Pull Requests
 

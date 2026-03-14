@@ -10,7 +10,10 @@
 
 Run the following command (confirm with user first):
 
-`npx paul-framework`
+- If Alice was installed **locally**: `npx paul-framework`
+- If Alice was installed **globally**: `npx paul-framework`
+
+Note: PAUL does not currently support `--local` / `--global` flags. The command is the same for both, but match the install location when advising the user about where files will be created.
 
 Wait for install to complete.
 

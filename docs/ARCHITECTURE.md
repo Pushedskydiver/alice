@@ -28,6 +28,20 @@ The registry (`registry/agents.json`) is a declarative JSON file listing availab
 
 This is the primary community contribution surface — adding a new agent means adding a JSON entry and a corresponding handoff workflow.
 
+## Utilities
+
+Shared utilities live in `src/utils/`, each in its own subfolder with co-located tests:
+
+- **`ansi/`** — ANSI colour and style helpers (`red`, `green`, `bold`, `dim`, etc.)
+- **`fs/`** — Filesystem helpers (`copyDir` for recursive directory copying)
+- **`parse-json/`** — Safe JSON parsing that returns `null` instead of throwing
+- **`version/`** — Reads and validates the `version` field from `package.json`
+
+Shared types live in `src/types/`:
+
+- **`agent.ts`** — `Agent` and `AgentRegistry` type definitions
+- **`install.ts`** — `InstallLocation` type (`'global' | 'local'`)
+
 ## Hooks
 
 Hooks live in `hooks/` and are **CommonJS** (`.js`) because Claude Code loads them via `require()`.

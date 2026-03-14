@@ -17,9 +17,9 @@ export const getVersion = (baseDir: string): string => {
   const pkgPath = resolve(baseDir, 'package.json');
   try {
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as {
-      version: string;
+      version?: string;
     };
-    return pkg.version;
+    return typeof pkg.version === 'string' ? pkg.version : '0.0.0';
   } catch {
     return '0.0.0';
   }
