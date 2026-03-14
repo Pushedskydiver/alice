@@ -10,6 +10,7 @@ description: List all Alice commands with descriptions
 |---|---|
 | `/alice:init` | Recommend and install the right AI coding agent for your project |
 | `/alice:update` | Update Alice to the latest version |
+| `/alice:uninstall` | Remove Alice's commands, workflows, and hooks |
 | `/alice:help` | Show this help message |
 
 ## About

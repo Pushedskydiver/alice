@@ -4,7 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/alice-agents?style=for-the-badge&color=d73a4a)](https://www.npmjs.com/package/alice-agents)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-42%20passing-brightgreen?style=for-the-badge)](docs/TESTING.md)
+[![Tests](https://img.shields.io/badge/tests-54%20passing-brightgreen?style=for-the-badge)](docs/TESTING.md)
 
 > [!WARNING]
 > Alice is in early development. Commands and behaviour may change between releases.
@@ -88,6 +88,7 @@ Alice will ask 3-4 questions and recommend an agent. Confirm, and she'll install
 | --- | --- |
 | `/alice:init` | Recommend and install the right AI coding agent |
 | `/alice:update` | Update Alice to the latest version |
+| `/alice:uninstall` | Remove Alice's commands, workflows, and hooks |
 | `/alice:help` | List all commands with descriptions |
 
 ## How the wizard works
