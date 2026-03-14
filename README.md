@@ -51,6 +51,9 @@ Alice knows about three agents. Each has a different philosophy:
 | **Multi-runtime** | Claude Code only | Claude Code, OpenCode, Gemini CLI, Codex | Claude Code only |
 | **Ideal for** | Teams with boards, ticket-driven workflow | Fast greenfield builds, parallel execution | Quality-critical projects, audit trails |
 
+> [!TIP]
+> [Clancy](https://github.com/Pushedskydiver/clancy) is built by the same developer as Alice. If you're using boards and want autonomous ticket execution, it's the one to try.
+
 ## Install
 
 ```bash
