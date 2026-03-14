@@ -27,7 +27,8 @@ Alice is a Claude Code slash command installer and AI coding agent launcher. It 
 
 | Path | Purpose |
 |---|---|
-| `src/installer/` | CLI installer entry point and prompts |
+| `src/installer/` | CLI installer entry point |
+| `src/prompts/` | Interactive prompts |
 | `src/commands/` | Slash command Markdown files (init, update, help) |
 | `src/workflows/` | Workflow Markdown files (agent handoffs) |
 | `src/types/agent.ts` | Agent type definitions |

@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-import { cpSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { choose, closePrompts } from '~/prompts/prompts.js';
+import type { InstallLocation } from '~/types/install.js';
 import { bold, brightRed, dim, green, red } from '~/utils/ansi/ansi.js';
-
-import { choose, closePrompts } from './prompts.js';
+import { copyDir } from '~/utils/fs/fs.js';
+import { getVersion } from '~/utils/version/version.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,28 +22,19 @@ ${red('  ██║  ██║███████╗██║╚█████
 ${red('  ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝╚══════╝')}
 `;
 
-const getVersion = (): string => {
-  const pkgPath = resolve(__dirname, '..', '..', 'package.json');
-  try {
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as {
-      version: string;
-    };
-    return pkg.version;
-  } catch {
-    return '0.0.0';
-  }
-};
-
+/**
+ * Returns the absolute path to the package root directory.
+ *
+ * @returns The resolved path two levels above `__dirname`.
+ */
 const getSourceRoot = (): string => resolve(__dirname, '..', '..');
 
-const copyDir = (src: string, dest: string): void => {
-  if (!existsSync(src)) return;
-  mkdirSync(dest, { recursive: true });
-  cpSync(src, dest, { recursive: true });
-};
-
-type InstallLocation = 'global' | 'local';
-
+/**
+ * Resolves the target `.claude/` directory based on install location.
+ *
+ * @param location - `'global'` for `~/.claude/`, `'local'` for `./.claude/`.
+ * @returns The absolute path to the target directory.
+ */
 const getTargetDir = (location: InstallLocation): string => {
   if (location === 'global') {
     const home = process.env.HOME ?? process.env.USERPROFILE ?? '';
@@ -50,6 +43,13 @@ const getTargetDir = (location: InstallLocation): string => {
   return join(process.cwd(), '.claude');
 };
 
+/**
+ * Registers Alice's hook scripts (update checker, context monitor) in
+ * Claude Code's `settings.json`. Skips hooks that are already registered
+ * to avoid duplicates.
+ *
+ * @param location - `'global'` or `'local'`, determines which `settings.json` to update.
+ */
 const registerHooks = (location: InstallLocation): void => {
   const settingsPath =
     location === 'global'
@@ -117,8 +117,13 @@ const registerHooks = (location: InstallLocation): void => {
   }
 };
 
+/**
+ * Main installer entry point. Displays the ASCII banner, prompts for
+ * install location (or reads `--global`/`--local` flags), copies commands
+ * and workflows into the target `.claude/` directory, and registers hooks.
+ */
 const install = async (): Promise<void> => {
-  const version = getVersion();
+  const version = getVersion(getSourceRoot());
 
   console.log(BANNER);
   console.log(
