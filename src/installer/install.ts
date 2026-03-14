@@ -8,6 +8,7 @@ import { choose, closePrompts } from '~/prompts/prompts.js';
 import type { InstallLocation } from '~/types/install.js';
 import { bold, brightRed, dim, green, red } from '~/utils/ansi/ansi.js';
 import { copyDir } from '~/utils/fs/fs.js';
+import { addIgnoreEntries } from '~/utils/ignore/ignore.js';
 import { getVersion } from '~/utils/version/version.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -175,6 +176,13 @@ export const install = async (): Promise<void> => {
 
   registerHooks(location);
   console.log(`  ${green('✓')} Registered hooks`);
+
+  if (location === 'local') {
+    const ignored = addIgnoreEntries(process.cwd());
+    if (ignored.length > 0) {
+      console.log(`  ${green('✓')} Updated ${ignored.join(', ')}`);
+    }
+  }
 
   console.log();
   console.log(`  ${green('✓ Alice installed.')}`);
