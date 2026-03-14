@@ -2,7 +2,7 @@
 description: Remove Alice's commands, workflows, and hooks from this project
 ---
 
-# Alice Uninstall
+# /alice:uninstall
 
 Remove Alice's commands, workflows, and hooks from this project.
 

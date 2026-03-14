@@ -54,11 +54,12 @@ const hasTaggedEntry = (
  */
 const appendEntry = (filePath: string, entry: string): void => {
   const content = readFileSync(filePath, 'utf-8');
-  const trailing = content.endsWith('\n') ? '' : '\n';
-  writeFileSync(
-    filePath,
-    `${content}${trailing}\n${ALICE_COMMENT}\n${entry}\n`,
-  );
+  if (content.length === 0) {
+    writeFileSync(filePath, `${ALICE_COMMENT}\n${entry}\n`);
+    return;
+  }
+  const separator = content.endsWith('\n') ? '\n' : '\n\n';
+  writeFileSync(filePath, `${content}${separator}${ALICE_COMMENT}\n${entry}\n`);
 };
 
 /**
@@ -84,7 +85,11 @@ const removeEntry = (filePath: string, entry: string): void => {
     filtered.push(lines[i]);
   }
 
-  writeFileSync(filePath, filtered.join('\n'));
+  let result = filtered.join('\n');
+  if (result.length > 0 && !result.endsWith('\n')) {
+    result += '\n';
+  }
+  writeFileSync(filePath, result);
 };
 
 /**
