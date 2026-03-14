@@ -224,4 +224,29 @@ describe('install', () => {
     const settingsPath = join(tmp, '.claude', 'settings.json');
     expect(existsSync(settingsPath)).toBe(true);
   });
+
+  it('creates .gitignore with .claude/ on local install', async () => {
+    process.argv = ['node', 'install.js', '--local'];
+
+    await install();
+
+    const gitignorePath = join(tmp, '.gitignore');
+    expect(existsSync(gitignorePath)).toBe(true);
+    const content = readFileSync(gitignorePath, 'utf-8');
+    expect(content).toContain('# Added by Alice');
+    expect(content).toContain('.claude/');
+  });
+
+  it('does not create .gitignore on global install', async () => {
+    const globalHome = makeTmpDir();
+    process.env.HOME = globalHome;
+    process.argv = ['node', 'install.js', '--global'];
+
+    await install();
+
+    const gitignorePath = join(tmp, '.gitignore');
+    expect(existsSync(gitignorePath)).toBe(false);
+
+    rmSync(globalHome, { recursive: true, force: true });
+  });
 });
