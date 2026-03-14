@@ -7,6 +7,16 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [0.2.0] — 2026-03-14
+
+### ✨ Features
+
+- **Uninstall command** — `/alice:uninstall` removes commands, workflows, hooks, and ignore entries
+- **Ignore file management** — installer adds `.claude/` to `.gitignore` (creates if missing), `.prettierignore`, and `.eslintignore` (only if they exist)
+- Entries tagged with `# Added by Alice` for clean removal on uninstall
+
+---
+
 ## [0.1.0] — 2026-03-14
 
 ### ✨ Features
