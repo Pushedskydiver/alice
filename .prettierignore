@@ -1,0 +1,7 @@
+dist/
+node_modules/
+hooks/
+src/commands/
+src/workflows/
+registry/
+*.md

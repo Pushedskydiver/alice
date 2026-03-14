@@ -1,0 +1,50 @@
+{
+  "agents": [
+    {
+      "id": "clancy",
+      "name": "Clancy",
+      "description": "Autonomous, board-driven development with structured roles — built on the Ralph technique by Geoffrey Huntley",
+      "author": "Ralph technique by Geoffrey Huntley — evolved and packaged as Clancy",
+      "url": "https://ghuntley.com/ralph/",
+      "npm_package": "chief-clancy",
+      "install_cmd": "npx chief-clancy",
+      "requires_board": true,
+      "supported_boards": ["jira", "github", "linear"],
+      "has_roles": true,
+      "optional_roles": ["planner", "strategist"],
+      "init_slash": "/clancy:init",
+      "map_codebase_slash": "/clancy:map-codebase",
+      "supports_existing_project": true,
+      "supports_greenfield": true
+    },
+    {
+      "id": "gsd",
+      "name": "GSD",
+      "description": "Spec-driven development with parallel subagent execution — speed-first",
+      "author": "TÂCHES",
+      "url": "https://github.com/glittercowboy/get-shit-done",
+      "npm_package": "get-shit-done-cc",
+      "install_cmd": "npx get-shit-done-cc@latest",
+      "requires_board": false,
+      "multi_runtime": ["claude", "opencode", "gemini", "codex"],
+      "new_project_slash": "/gsd:new-project",
+      "map_codebase_slash": "/gsd:map-codebase",
+      "supports_existing_project": true,
+      "supports_greenfield": true
+    },
+    {
+      "id": "paul",
+      "name": "PAUL",
+      "description": "Quality-first Plan-Apply-Unify loop with BDD acceptance criteria",
+      "author": "Christopher Kahler",
+      "url": "https://github.com/ChristopherKahler/paul",
+      "npm_package": "paul-framework",
+      "install_cmd": "npx paul-framework",
+      "requires_board": false,
+      "init_slash": "/paul:init",
+      "map_codebase_slash": "/paul:map-codebase",
+      "supports_existing_project": true,
+      "supports_greenfield": true
+    }
+  ]
+}

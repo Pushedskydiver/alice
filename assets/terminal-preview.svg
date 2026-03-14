@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560">
+  <defs>
+    <style>
+      .text { font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', Consolas, monospace; }
+    </style>
+  </defs>
+
+  <!-- Window background -->
+  <rect width="920" height="560" rx="12" fill="#451e1e"/>
+  <rect x="1" y="1" width="918" height="558" rx="11" fill="#120c0c"/>
+
+  <!-- Title bar -->
+  <rect x="1" y="1" width="918" height="36" rx="11" fill="#1a0f0f"/>
+  <rect x="1" y="26" width="918" height="12" fill="#1a0f0f"/>
+
+  <!-- Window buttons -->
+  <circle cx="24" cy="19" r="7" fill="#f7768e"/>
+  <circle cx="48" cy="19" r="7" fill="#e0af68"/>
+  <circle cx="72" cy="19" r="7" fill="#9ece6a"/>
+
+  <!-- Title -->
+  <text x="460" y="24" text-anchor="middle" class="text" font-size="13" fill="#8b5555">Terminal</text>
+
+  <!-- Content -->
+  <g transform="translate(32, 56)" font-size="14" class="text">
+
+    <!-- Prompt line -->
+    <text y="0" fill="#e05555">~</text>
+    <text y="0" x="16" fill="#8b5555">$</text>
+    <text y="0" x="36" fill="#e2e8f0">npx alice-agents</text>
+
+    <!-- ASCII art — ALICE -->
+    <text y="36"  fill="#e05555" xml:space="preserve">   █████╗ ██╗     ██╗ ██████╗███████╗</text>
+    <text y="56"  fill="#e05555" xml:space="preserve">  ██╔══██╗██║     ██║██╔════╝██╔════╝</text>
+    <text y="76"  fill="#e05555" xml:space="preserve">  ███████║██║     ██║██║     █████╗  </text>
+    <text y="96"  fill="#e05555" xml:space="preserve">  ██╔══██║██║     ██║██║     ██╔══╝  </text>
+    <text y="116" fill="#e05555" xml:space="preserve">  ██║  ██║███████╗██║╚██████╗███████╗</text>
+    <text y="136" fill="#e05555" xml:space="preserve">  ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝╚══════╝</text>
+
+    <!-- Version + tagline -->
+    <text y="172" fill="#e2e8f0">  <tspan font-weight="bold">v0.1.0</tspan><tspan fill="#8b5555">  Find the right AI coding agent for your project.</tspan></text>
+    <text y="192" fill="#8b5555">  "My name is Alice, and I remember everything."</text>
+
+    <!-- Interactive install prompt -->
+    <text y="228" fill="#e2e8f0">  Where would you like to install?</text>
+    <text y="248" fill="#8b5555">    [1]<tspan fill="#e2e8f0"> Global </tspan><tspan fill="#8b5555">(~/.claude)   — available in all projects</tspan></text>
+    <text y="268" fill="#8b5555">    [2]<tspan fill="#e2e8f0"> Local  </tspan><tspan fill="#8b5555">(./.claude)  — this project only</tspan></text>
+    <text y="288" fill="#8b5555">  Choice [1]: <tspan fill="#e2e8f0">2</tspan></text>
+
+    <!-- Install output -->
+    <text y="320" fill="#22c55e">  ✓ <tspan fill="#e2e8f0">Installed commands/alice</tspan></text>
+    <text y="340" fill="#22c55e">  ✓ <tspan fill="#e2e8f0">Registered hooks</tspan></text>
+
+    <!-- Done message with RE quote -->
+    <text y="376"><tspan fill="#22c55e">  ✓ Alice installed.</tspan></text>
+    <text y="396"><tspan fill="#e2e8f0">    Run </tspan><tspan fill="#e05555">/alice:init</tspan><tspan fill="#e2e8f0"> in Claude Code to get started.</tspan></text>
+    <text y="416" fill="#8b5555">    "The game has just begun."</text>
+
+    <!-- New prompt -->
+    <text y="460" fill="#e05555">~</text>
+    <text y="460" x="16" fill="#8b5555">$</text>
+    <text y="460" x="36" fill="#e2e8f0">▋</text>
+
+  </g>
+
+  <!-- Rocket SVG icon — vertically centred with ALICE banner -->
+  <g transform="translate(390, 72) scale(1.8)">
+    <!-- Rocket body -->
+    <path d="M24 0 C24 0 30 8 30 20 L30 52 C30 56 18 56 18 52 L18 20 C18 8 24 0 24 0Z" fill="#e05555" opacity="0.9"/>
+    <!-- Nose cone highlight -->
+    <path d="M24 0 C24 0 27 8 27 18 L24 4Z" fill="#ff7777" opacity="0.4"/>
+    <!-- Window -->
+    <circle cx="24" cy="26" r="5" fill="#120c0c"/>
+    <circle cx="24" cy="26" r="3.5" fill="#8b5555" opacity="0.6"/>
+    <!-- Fins -->
+    <path d="M18 40 L10 56 L18 52Z" fill="#c04040"/>
+    <path d="M30 40 L38 56 L30 52Z" fill="#c04040"/>
+    <!-- Exhaust flames -->
+    <path d="M21 56 L24 68 L27 56Z" fill="#e0af68" opacity="0.8"/>
+    <path d="M22 56 L24 64 L26 56Z" fill="#f7768e" opacity="0.9"/>
+    <path d="M23 56 L24 60 L25 56Z" fill="#e2e8f0" opacity="0.7"/>
+  </g>
+
+</svg>
