@@ -117,10 +117,12 @@ Show recommendation, confirm, install, hand off
 │   └── alice/
 │       ├── init.md
 │       ├── update.md
+│       ├── uninstall.md
 │       └── help.md
 └── alice/
     └── workflows/
         ├── init.md
+        ├── uninstall.md
         ├── handoff-clancy.md
         ├── handoff-gsd.md
         └── handoff-paul.md
