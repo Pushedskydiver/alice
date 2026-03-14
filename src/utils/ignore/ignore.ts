@@ -23,6 +23,30 @@ const hasEntry = (filePath: string, entry: string): boolean => {
 };
 
 /**
+ * Checks whether a file contains an Alice-tagged entry, defined as the
+ * identifying comment immediately followed by the ignore pattern.
+ *
+ * @param filePath - Absolute path to the file.
+ * @param comment - The identifying comment line (e.g. `# Added by Alice`).
+ * @param entry - The pattern line to search for (e.g. `.claude/`).
+ * @returns `true` if the tagged pair is present.
+ */
+const hasTaggedEntry = (
+  filePath: string,
+  comment: string,
+  entry: string,
+): boolean => {
+  const content = readFileSync(filePath, 'utf-8');
+  const lines = content.split('\n');
+  for (let i = 0; i < lines.length - 1; i += 1) {
+    if (lines[i].trim() === comment && lines[i + 1].trim() === entry) {
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
  * Appends an ignore entry to a file with an identifying comment.
  *
  * @param filePath - Absolute path to the ignore file.
@@ -100,7 +124,8 @@ export const addIgnoreEntries = (projectDir: string): string[] => {
 
 /**
  * Removes `.claude/` entries that Alice added from ignore files in the
- * given directory. Only touches files that exist and contain the entry.
+ * given directory. Only touches files that exist and contain the
+ * Alice-tagged entry (comment + pattern pair).
  *
  * @param projectDir - The root directory of the user's project.
  * @returns The list of files that were modified.
@@ -113,7 +138,7 @@ export const removeIgnoreEntries = (projectDir: string): string[] => {
 
     if (!existsSync(filePath)) continue;
 
-    if (hasEntry(filePath, CLAUDE_ENTRY)) {
+    if (hasTaggedEntry(filePath, ALICE_COMMENT, CLAUDE_ENTRY)) {
       removeEntry(filePath, CLAUDE_ENTRY);
       modified.push(file);
     }

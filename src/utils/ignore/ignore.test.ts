@@ -137,6 +137,16 @@ describe('removeIgnoreEntries', () => {
     expect(modified).toEqual([]);
   });
 
+  it('does not remove .claude/ if not tagged by Alice', () => {
+    writeFileSync(join(tmp, '.gitignore'), 'node_modules/\n.claude/\n');
+
+    const modified = removeIgnoreEntries(tmp);
+
+    expect(modified).toEqual([]);
+    const content = readFileSync(join(tmp, '.gitignore'), 'utf-8');
+    expect(content).toContain('.claude/');
+  });
+
   it('skips files that do not exist', () => {
     const modified = removeIgnoreEntries(tmp);
 
