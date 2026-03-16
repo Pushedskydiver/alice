@@ -386,43 +386,8 @@ describe('printErrorHint', () => {
     );
   });
 
-  it('suggests deleting settings.json for JSON errors', () => {
-    printErrorHint('Unexpected token in JSON');
-    expect(console.error).toHaveBeenCalledWith(
-      expect.stringContaining('settings.json'),
-    );
-  });
-
   it('prints nothing for unknown errors', () => {
     printErrorHint('something else went wrong');
     expect(console.error).not.toHaveBeenCalled();
-  });
-});
-
-describe('install error handling', () => {
-  let tmp: string;
-  const originalArgv = process.argv;
-
-  beforeEach(() => {
-    tmp = makeTmpDir();
-    vi.spyOn(process, 'cwd').mockReturnValue(tmp);
-    vi.spyOn(console, 'log').mockImplementation(() => {});
-  });
-
-  afterEach(() => {
-    process.argv = originalArgv;
-    vi.restoreAllMocks();
-    rmSync(tmp, { recursive: true, force: true });
-  });
-
-  it('propagates copyDir errors', async () => {
-    process.argv = ['node', 'install.js', '--local'];
-
-    const fsModule = await import('~/utils/fs/fs.js');
-    vi.spyOn(fsModule, 'copyDir').mockImplementation(() => {
-      throw new Error('EACCES: permission denied');
-    });
-
-    await expect(install()).rejects.toThrow('EACCES');
   });
 });

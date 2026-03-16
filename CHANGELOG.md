@@ -11,7 +11,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### ✨ Features
 
-- **Better error messages** — actionable hints for permission errors and corrupted settings.json
+- **Better error messages** — actionable hints for permission errors (suggests `--local` or checking ownership)
 - **Cached update checks** — 24-hour cache avoids hitting npm on every session start; respects `CI` and `ALICE_NO_UPDATE_CHECK` env vars
 - **Agent comparison matrix** — `/alice:help` now shows a feature comparison table for all agents
 - **`yellow` ANSI helper** — for warning-level messages

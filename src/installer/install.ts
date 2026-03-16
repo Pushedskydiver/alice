@@ -297,16 +297,9 @@ const isDirectRun =
  *
  * @param message - The error message string.
  */
-/**
- * Prints a contextual hint based on the error message to help the user recover.
- *
- * @param message - The error message string.
- */
 export const printErrorHint = (message: string): void => {
   if (message.includes('EACCES') || message.includes('permission')) {
     console.error(yellow('  Try --local or check directory ownership.'));
-  } else if (message.includes('JSON') || message.includes('parse')) {
-    console.error(yellow('  Delete .claude/settings.json and re-run.'));
   }
 };
 
