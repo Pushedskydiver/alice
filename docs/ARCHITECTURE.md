@@ -8,7 +8,7 @@ The package ships slash commands, workflows, a declarative agent registry, and l
 
 ## Installer flow
 
-1. **Entry point:** `npx alice-agents` runs `src/installer/install.ts`.
+1. **Entry point:** `npx alice-agents` runs `src/installer/install.ts`. The installer is split into focused modules: `paths.ts` (directory resolution), `hooks.ts` (settings.json management), `ui.ts` (help/dry-run/banner), `clean.ts` (reinstall cleanup), and `errors.ts` (recovery hints).
 2. **Prompt:** The installer asks the user which agents to install and gathers preferences via `src/prompts/prompts.ts`.
 3. **Copy:** Slash command (`.md`) and workflow (`.md`) files are copied into the user's `.claude/` directory.
 4. **Register hooks:** CommonJS hook scripts from `hooks/` are registered with Claude Code's hook system.

@@ -1,193 +1,29 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { resolve } from 'node:path';
 
 import { choose, closePrompts } from '~/prompts/prompts.js';
 import type { InstallLocation } from '~/types/install.js';
-import { bold, brightRed, dim, green, red, yellow } from '~/utils/ansi/ansi.js';
+import { bold, brightRed, dim, green, red } from '~/utils/ansi/ansi.js';
 import { copyDir } from '~/utils/fs/fs.js';
 import { addIgnoreEntries } from '~/utils/ignore/ignore.js';
 import { getVersion } from '~/utils/version/version.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const BANNER = `
-${red('   █████╗ ██╗     ██╗ ██████╗███████╗')}
-${red('  ██╔══██╗██║     ██║██╔════╝██╔════╝')}
-${red('  ███████║██║     ██║██║     █████╗  ')}
-${red('  ██╔══██║██║     ██║██║     ██╔══╝  ')}
-${red('  ██║  ██║███████╗██║╚██████╗███████╗')}
-${red('  ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝╚══════╝')}
-`;
-
-/**
- * Returns the absolute path to the package root directory.
- *
- * @returns The resolved path two levels above `__dirname`.
- */
-export const getSourceRoot = (): string => resolve(__dirname, '..', '..');
-
-/**
- * Returns the user's home directory from environment variables.
- *
- * @returns The home directory path.
- * @throws If neither `HOME` nor `USERPROFILE` is set.
- */
-export const getHomeDir = (): string => {
-  const home = process.env.HOME ?? process.env.USERPROFILE;
-  if (!home) {
-    throw new Error(
-      'Cannot determine home directory — neither HOME nor USERPROFILE is set.',
-    );
-  }
-  return home;
-};
-
-/**
- * Resolves the target `.claude/` directory based on install location.
- *
- * @param location - `'global'` for `~/.claude/`, `'local'` for `./.claude/`.
- * @returns The absolute path to the target directory.
- */
-export const getTargetDir = (location: InstallLocation): string => {
-  if (location === 'global') {
-    return join(getHomeDir(), '.claude');
-  }
-  return join(process.cwd(), '.claude');
-};
-
-/**
- * Registers Alice's hook scripts (update checker, context monitor) in
- * Claude Code's `settings.json`. Skips hooks that are already registered
- * to avoid duplicates.
- *
- * @param location - `'global'` or `'local'`, determines which `settings.json` to update.
- */
-export const registerHooks = (location: InstallLocation): void => {
-  const targetDir = getTargetDir(location);
-  const settingsPath = join(targetDir, 'settings.json');
-
-  const sourceRoot = getSourceRoot();
-  const hooksDir = join(sourceRoot, 'hooks');
-
-  if (!existsSync(hooksDir)) return;
-
-  type Settings = {
-    hooks?: Record<string, { command: string; type?: string }[]>;
-    [key: string]: unknown;
-  };
-
-  let settings: Settings = {};
-  if (existsSync(settingsPath)) {
-    try {
-      settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as Settings;
-    } catch {
-      settings = {};
-    }
-  }
-
-  if (!settings.hooks) {
-    settings.hooks = {};
-  }
-
-  const checkUpdatePath = join(hooksDir, 'alice-check-update.js');
-  const contextMonitorPath = join(hooksDir, 'alice-context-monitor.js');
-
-  if (existsSync(checkUpdatePath)) {
-    if (!settings.hooks.SessionStart) {
-      settings.hooks.SessionStart = [];
-    }
-    const already = settings.hooks.SessionStart.some((h) =>
-      h.command.includes('alice-check-update'),
-    );
-    if (!already) {
-      settings.hooks.SessionStart.push({
-        command: `node "${checkUpdatePath}"`,
-        type: 'command',
-      });
-    }
-  }
-
-  if (existsSync(contextMonitorPath)) {
-    if (!settings.hooks.Notification) {
-      settings.hooks.Notification = [];
-    }
-    const already = settings.hooks.Notification.some((h) =>
-      h.command.includes('alice-context-monitor'),
-    );
-    if (!already) {
-      settings.hooks.Notification.push({
-        command: `node "${contextMonitorPath}"`,
-        type: 'command',
-      });
-    }
-  }
-
-  mkdirSync(dirname(settingsPath), { recursive: true });
-  writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
-};
-
-/**
- * Prints CLI usage information and exits.
- *
- * @param version - The current package version.
- */
-const showHelp = (version: string): never => {
-  console.log(`alice-agents v${version}`);
-  console.log('Find the right AI coding agent for your project.');
-  console.log();
-  console.log('Usage:');
-  console.log(
-    '  npx alice-agents [--global | --local] [--help] [--version] [--dry-run]',
-  );
-  console.log();
-  console.log('Flags:');
-  console.log('  --global     Install to ~/.claude/ (all projects)');
-  console.log('  --local      Install to ./.claude/ (current project only)');
-  console.log(
-    '  --dry-run    Show what would be installed without writing files',
-  );
-  console.log('  --help       Show this help message');
-  console.log('  --version    Print version number');
-  return process.exit(0) as never;
-};
-
-/**
- * Prints the dry-run summary showing what would be created.
- *
- * @param location - The install location.
- */
-const showDryRun = (location: InstallLocation): void => {
-  const targetDir = getTargetDir(location);
-
-  console.log();
-  console.log(dim('[dry-run] No files will be modified.'));
-  console.log();
-  console.log(`  Target directory: ${dim(targetDir)}`);
-  console.log(
-    `  Would copy commands to: ${dim(join(targetDir, 'commands', 'alice'))}`,
-  );
-  console.log(
-    `  Would copy workflows to: ${dim(join(targetDir, 'alice', 'workflows'))}`,
-  );
-  console.log(
-    `  Would register hooks in: ${dim(join(targetDir, 'settings.json'))}`,
-  );
-  if (location === 'local') {
-    console.log(`  Would update ignore files in: ${dim(process.cwd())}`);
-  }
-};
+import { cleanExistingInstall } from './clean.js';
+import { printErrorHint } from './errors.js';
+import { registerHooks } from './hooks.js';
+import { getSourceRoot, getTargetDir } from './paths.js';
+import { BANNER, showDryRun, showHelp } from './ui.js';
 
 /**
  * Main installer entry point. Displays the ASCII banner, prompts for
  * install location (or reads `--global`/`--local` flags), copies commands
  * and workflows into the target `.claude/` directory, and registers hooks.
  *
- * Supports `--help`, `--version`, `--dry-run`, and graceful Ctrl+C handling.
- * Requires `--global` or `--local` in non-interactive (CI) environments.
+ * Supports `--help`, `--version`, `--dry-run`, `--reinstall`, and graceful
+ * Ctrl+C handling. Requires `--global` or `--local` in non-interactive (CI)
+ * environments.
  */
 export const install = async (): Promise<void> => {
   const args = process.argv.slice(2);
@@ -244,6 +80,10 @@ export const install = async (): Promise<void> => {
       location = choice === 0 ? 'global' : 'local';
     }
 
+    if (args.includes('--reinstall')) {
+      cleanExistingInstall(location);
+    }
+
     // Dry-run mode — show what would happen, then exit
     if (args.includes('--dry-run')) {
       showDryRun(location);
@@ -291,22 +131,6 @@ export const install = async (): Promise<void> => {
 
 const isDirectRun =
   process.argv[1] && resolve(process.argv[1]).includes('install');
-
-/**
- * Prints a contextual hint based on the error message to help the user recover.
- *
- * @param message - The error message string.
- */
-export const printErrorHint = (message: string): void => {
-  const lower = message.toLowerCase();
-  if (
-    lower.includes('eacces') ||
-    lower.includes('eperm') ||
-    lower.includes('permission denied')
-  ) {
-    console.error(yellow('  Try --local or check directory ownership.'));
-  }
-};
 
 if (isDirectRun) {
   install().catch((err: unknown) => {

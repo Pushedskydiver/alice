@@ -8,6 +8,8 @@ The main way to contribute is through the **agent registry** (`registry/agents.j
 
 Alice only launches external agents — do not add agent implementation code to this repo.
 
+See [REGISTRY.md](REGISTRY.md) for complete field documentation, examples, and the submission checklist. Use the [agent submission PR template](.github/PULL_REQUEST_TEMPLATE/agent_submission.md) when adding a new agent.
+
 ## Adding a New Agent
 
 1. Add a JSON entry to `registry/agents.json` with all required fields
