@@ -30,11 +30,13 @@ If `package.json` exists, read it and check for:
 - **Express/Fastify**: `express` or `fastify` in dependencies
 - **Monorepo**: `workspaces` field in `package.json`, or `pnpm-workspace.yaml` exists, or `lerna.json` exists
 
-If `package.json` does not exist, check for:
+Additionally, always check for non-JS languages (these apply regardless of whether `package.json` exists — polyglot and monorepo setups are common):
 - **Python**: `requirements.txt`, `pyproject.toml`, or `setup.py`
 - **Go**: `go.mod`
 - **Rust**: `Cargo.toml`
 - **Java**: `pom.xml` or `build.gradle`
+
+Similarly, **TypeScript** detection via `tsconfig.json` applies even without `package.json`.
 
 ### Git host detection
 
@@ -53,10 +55,15 @@ Check for:
 
 ### Existing agent detection
 
-Check for the presence of:
-- `.clancy/` or `.claude/commands/clancy/`
-- `.gsd/` or `.claude/commands/gsd/`
-- `.paul/` or `.claude/commands/paul/` or `.planning/`
+Check for agent command directories (installed by the agents themselves):
+- `.claude/commands/clancy/` → Clancy
+- `.claude/commands/gsd/` → GSD
+- `.claude/commands/paul/` → PAUL
+
+Also check for legacy agent config directories (created by older agent versions):
+- `.clancy/` → Clancy (legacy)
+- `.gsd/` → GSD (legacy)
+- `.paul/` or `.planning/` → PAUL (legacy)
 
 If **any** of these exist, an agent is already installed.
 
@@ -142,7 +149,7 @@ What matters most to you?
 
 ### Clancy follow-ups
 
-If a Git host was detected, pre-select the matching board option:
+If **GitHub** was detected as the Git host, pre-select GitHub Issues:
 
 ```
 What board do you use?
