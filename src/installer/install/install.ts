@@ -24,7 +24,7 @@ import { BANNER, showDryRun, showHelp } from '../ui/ui.js';
  * install location (or reads `--global`/`--local` flags), copies commands
  * and workflows into the target `.claude/` directory, and registers hooks.
  *
- * Supports `--help`, `--version`, `--dry-run`, `--reinstall`, and graceful
+ * Supports `--help`, `--version`, `--dry-run`, `--reinstall`, `--reset-preferences`, and graceful
  * Ctrl+C handling. Requires `--global` or `--local` in non-interactive (CI)
  * environments.
  */
