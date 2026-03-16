@@ -26,7 +26,7 @@ export const showHelp = (version: string): never => {
   console.log();
   console.log('Usage:');
   console.log(
-    '  npx alice-agents [--global | --local] [--help] [--version] [--dry-run] [--reinstall]',
+    '  npx alice-agents [--global | --local] [--dry-run] [--reinstall] [--reset-preferences]',
   );
   console.log();
   console.log('Flags:');
