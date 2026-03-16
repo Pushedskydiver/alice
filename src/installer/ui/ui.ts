@@ -26,18 +26,25 @@ export const showHelp = (version: string): never => {
   console.log();
   console.log('Usage:');
   console.log(
-    '  npx alice-agents [--global | --local] [--help] [--version] [--dry-run] [--reinstall]',
+    '  npx alice-agents [--global | --local] [--dry-run] [--reinstall] [--reset-preferences]',
   );
   console.log();
   console.log('Flags:');
-  console.log('  --global     Install to ~/.claude/ (all projects)');
-  console.log('  --local      Install to ./.claude/ (current project only)');
+  console.log('  --global              Install to ~/.claude/ (all projects)');
   console.log(
-    '  --dry-run    Show what would be installed without writing files',
+    '  --local               Install to ./.claude/ (current project only)',
   );
-  console.log('  --reinstall  Remove previous installation before installing');
-  console.log('  --help       Show this help message');
-  console.log('  --version    Print version number');
+  console.log(
+    '  --dry-run             Show what would be installed without writing files',
+  );
+  console.log(
+    '  --reinstall           Remove previous installation before installing',
+  );
+  console.log(
+    '  --reset-preferences   Clear saved install location preference',
+  );
+  console.log('  --help                Show this help message');
+  console.log('  --version             Print version number');
   return process.exit(0) as never;
 };
 

@@ -7,6 +7,10 @@ import type { InstallLocation } from '~/types/install.js';
 import { bold, brightRed, dim, green, red } from '~/utils/ansi/ansi.js';
 import { copyDir } from '~/utils/fs/fs.js';
 import { addIgnoreEntries } from '~/utils/ignore/ignore.js';
+import {
+  getSavedLocation,
+  savePreferences,
+} from '~/utils/preferences/preferences.js';
 import { getVersion } from '~/utils/version/version.js';
 
 import { cleanExistingInstall } from '../clean/clean.js';
@@ -20,7 +24,7 @@ import { BANNER, showDryRun, showHelp } from '../ui/ui.js';
  * install location (or reads `--global`/`--local` flags), copies commands
  * and workflows into the target `.claude/` directory, and registers hooks.
  *
- * Supports `--help`, `--version`, `--dry-run`, `--reinstall`, and graceful
+ * Supports `--help`, `--version`, `--dry-run`, `--reinstall`, `--reset-preferences`, and graceful
  * Ctrl+C handling. Requires `--global` or `--local` in non-interactive (CI)
  * environments.
  */
@@ -35,6 +39,17 @@ export const install = async (): Promise<void> => {
 
   if (args.includes('--version')) {
     console.log(version);
+    return process.exit(0) as never;
+  }
+
+  if (args.includes('--reset-preferences')) {
+    try {
+      savePreferences({});
+      console.log('✓ Preferences cleared.');
+    } catch {
+      console.error(red('❌ Failed to clear preferences.'));
+      return process.exit(1) as never;
+    }
     return process.exit(0) as never;
   }
 
@@ -63,20 +78,33 @@ export const install = async (): Promise<void> => {
       location = 'global';
     } else if (args.includes('--local')) {
       location = 'local';
+    } else if (!process.stdin.isTTY) {
+      console.error(
+        red('Non-interactive environment detected. Use --global or --local.'),
+      );
+      console.error(dim('  Example: npx alice-agents --global'));
+      closePrompts();
+      return process.exit(1) as never;
     } else {
-      if (!process.stdin.isTTY) {
-        console.error(
-          red('Non-interactive environment detected. Use --global or --local.'),
+      const saved = getSavedLocation();
+
+      if (saved) {
+        console.log(
+          `  Installing ${saved}ly ${dim(`(saved preference. Use --global or --local to override.)`)}`,
         );
-        console.error(dim('  Example: npx alice-agents --global'));
-        closePrompts();
-        return process.exit(1) as never;
+        location = saved;
+      } else {
+        const choice = await choose('  Where would you like to install?', [
+          `Global ${dim('(~/.claude)   — available in all projects')}`,
+          `Local  ${dim('(./.claude)  — this project only')}`,
+        ]);
+        location = choice === 0 ? 'global' : 'local';
+        try {
+          savePreferences({ install_location: location });
+        } catch {
+          // Best-effort — don't block install if preference can't be saved
+        }
       }
-      const choice = await choose('  Where would you like to install?', [
-        `Global ${dim('(~/.claude)   — available in all projects')}`,
-        `Local  ${dim('(./.claude)  — this project only')}`,
-      ]);
-      location = choice === 0 ? 'global' : 'local';
     }
 
     // Dry-run mode — show what would happen, then exit

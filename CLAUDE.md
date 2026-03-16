@@ -13,7 +13,7 @@ Alice is a Claude Code slash command installer and AI coding agent launcher. It 
 - `src/workflows/` — Workflow Markdown files: `init.md`, `uninstall.md`, `handoff-*.md`
 - `src/schemas/` — Zod schemas (`agent.ts`) — single source of truth for validation and types
 - `src/types/` — Shared type definitions derived from schemas (`agent.ts`, `install.ts`)
-- `src/utils/` — Shared utilities (`ansi/`, `fs/`, `ignore/`, `parse-json/`, `registry/`, `version/`)
+- `src/utils/` — Shared utilities (`ansi/`, `fs/`, `ignore/`, `parse-json/`, `preferences/`, `registry/`, `version/`)
 - `registry/agents.json` — Declarative agent registry (JSON)
 - `hooks/` — CommonJS hooks loaded by Claude Code (`alice-check-update.js`, `alice-context-monitor.js`)
 - `dist/` — Build output (git-ignored)
