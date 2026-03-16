@@ -347,4 +347,19 @@ describe('install', () => {
       configurable: true,
     });
   });
+
+  it('exits 1 when both --global and --local are provided', async () => {
+    process.argv = ['node', 'install.js', '--global', '--local'];
+    const exitSpy = vi
+      .spyOn(process, 'exit')
+      .mockImplementation(() => undefined as never);
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await install();
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('Cannot use both'),
+    );
+  });
 });

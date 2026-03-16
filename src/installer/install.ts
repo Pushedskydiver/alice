@@ -221,7 +221,10 @@ export const install = async (): Promise<void> => {
 
     let location: InstallLocation;
 
-    if (args.includes('--global')) {
+    if (args.includes('--global') && args.includes('--local')) {
+      console.error(red('Cannot use both --global and --local. Pick one.'));
+      return process.exit(1) as never;
+    } else if (args.includes('--global')) {
       location = 'global';
     } else if (args.includes('--local')) {
       location = 'local';
