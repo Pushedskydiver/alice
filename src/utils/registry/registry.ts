@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import type { AgentRegistry } from '../../types/agent.js';
-import { AgentRegistrySchema } from '../../types/agent.js';
+import { AgentRegistrySchema } from '../../schemas/agent.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
