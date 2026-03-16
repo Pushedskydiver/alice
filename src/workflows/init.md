@@ -34,7 +34,7 @@ Additionally, always check for non-JS languages (these apply regardless of wheth
 - **Python**: `requirements.txt`, `pyproject.toml`, or `setup.py`
 - **Go**: `go.mod`
 - **Rust**: `Cargo.toml`
-- **Java**: `pom.xml` or `build.gradle`
+- **Java**: `pom.xml`, `build.gradle`, or `build.gradle.kts`
 
 Similarly, **TypeScript** detection via `tsconfig.json` applies even without `package.json`.
 
