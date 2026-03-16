@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { bold, brightRed, cyan, dim, green, red } from './ansi.js';
+import { bold, brightRed, cyan, dim, green, red, yellow } from './ansi.js';
 
 describe('ansi', () => {
   it('wraps text in red', () => {
@@ -17,6 +17,10 @@ describe('ansi', () => {
 
   it('wraps text in cyan', () => {
     expect(cyan('hello')).toBe('\x1b[36mhello\x1b[0m');
+  });
+
+  it('wraps text in yellow', () => {
+    expect(yellow('hello')).toBe('\x1b[33mhello\x1b[0m');
   });
 
   it('wraps text in dim', () => {

@@ -19,6 +19,10 @@ export const green = (text: string): string => `${esc('32')}${text}${esc('0')}`;
 /** Wraps text in cyan (`\x1b[36m`). */
 export const cyan = (text: string): string => `${esc('36')}${text}${esc('0')}`;
 
+/** Wraps text in yellow (`\x1b[33m`). */
+export const yellow = (text: string): string =>
+  `${esc('33')}${text}${esc('0')}`;
+
 /** Wraps text in dim style (`\x1b[2m`). */
 export const dim = (text: string): string => `${esc('2')}${text}${esc('0')}`;
 

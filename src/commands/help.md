@@ -18,11 +18,17 @@ description: List all Alice commands with descriptions
 Alice is an open source Claude Code slash command installer and AI coding agent launcher.
 She asks a few questions, recommends the right agent, and hands off to it.
 
-## Agents
+## Agent comparison
 
-Alice knows about three agents:
+| Feature | Clancy | GSD | PAUL |
+|---|:---:|:---:|:---:|
+| Board integration | Jira, GitHub, Linear | — | — |
+| Speed priority | — | ✓ | — |
+| Quality priority | — | — | ✓ |
+| Autonomous mode | ✓ | — | — |
+| Multi-runtime | — | Claude, OpenCode, Gemini, Codex | — |
 
-- **Clancy** — Autonomous, board-driven development (Jira, GitHub Issues, Linear). Built on the Ralph technique by Geoffrey Huntley.
+- **Clancy** — Autonomous, board-driven development. Built on the Ralph technique by Geoffrey Huntley.
 - **GSD** — Spec-driven development with parallel subagent execution. Speed-first. By TÂCHES.
 - **PAUL** — Quality-first Plan-Apply-Unify loop with BDD acceptance criteria. By Christopher Kahler.
 
