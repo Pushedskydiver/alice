@@ -249,4 +249,102 @@ describe('install', () => {
 
     rmSync(globalHome, { recursive: true, force: true });
   });
+
+  it('--help prints usage and exits 0', async () => {
+    process.argv = ['node', 'install.js', '--help'];
+    const exitSpy = vi
+      .spyOn(process, 'exit')
+      .mockImplementation(() => undefined as never);
+
+    await install();
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Usage:'));
+  });
+
+  it('--version prints version and exits 0', async () => {
+    process.argv = ['node', 'install.js', '--version'];
+    const exitSpy = vi
+      .spyOn(process, 'exit')
+      .mockImplementation(() => undefined as never);
+
+    await install();
+
+    expect(exitSpy).toHaveBeenCalledWith(0);
+    expect(console.log).toHaveBeenCalledWith(
+      expect.stringMatching(/^\d+\.\d+\.\d+$/),
+    );
+  });
+
+  it('--dry-run --local shows paths but creates no files', async () => {
+    process.argv = ['node', 'install.js', '--dry-run', '--local'];
+
+    await install();
+
+    expect(console.log).toHaveBeenCalledWith(
+      expect.stringContaining('[dry-run]'),
+    );
+    const commandsDir = join(tmp, '.claude', 'commands', 'alice');
+    expect(existsSync(commandsDir)).toBe(false);
+  });
+
+  it('--dry-run --global shows global paths', async () => {
+    const globalHome = makeTmpDir();
+    process.env.HOME = globalHome;
+    process.argv = ['node', 'install.js', '--dry-run', '--global'];
+
+    await install();
+
+    expect(console.log).toHaveBeenCalledWith(
+      expect.stringContaining('[dry-run]'),
+    );
+    const commandsDir = join(globalHome, '.claude', 'commands', 'alice');
+    expect(existsSync(commandsDir)).toBe(false);
+
+    rmSync(globalHome, { recursive: true, force: true });
+  });
+
+  it('exits 1 in non-TTY without --global or --local', async () => {
+    process.argv = ['node', 'install.js'];
+    const originalIsTTY = process.stdin.isTTY;
+    Object.defineProperty(process.stdin, 'isTTY', {
+      value: false,
+      configurable: true,
+    });
+    const exitSpy = vi
+      .spyOn(process, 'exit')
+      .mockImplementation(() => undefined as never);
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await install();
+
+    expect(exitSpy).toHaveBeenCalledWith(1);
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('Non-interactive'),
+    );
+
+    Object.defineProperty(process.stdin, 'isTTY', {
+      value: originalIsTTY,
+      configurable: true,
+    });
+  });
+
+  it('non-TTY with --local succeeds', async () => {
+    process.argv = ['node', 'install.js', '--local'];
+    const originalIsTTY = process.stdin.isTTY;
+    Object.defineProperty(process.stdin, 'isTTY', {
+      value: false,
+      configurable: true,
+    });
+
+    await install();
+
+    const commandsDir = join(tmp, '.claude', 'commands', 'alice');
+    expect(existsSync(commandsDir)).toBe(true);
+
+    Object.defineProperty(process.stdin, 'isTTY', {
+      value: originalIsTTY,
+      configurable: true,
+    });
+  });
 });
