@@ -7,6 +7,15 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [0.8.0] — 2026-03-16
+
+### ✨ Features
+
+- **Persist install preference** — Alice remembers your install location choice (`~/.config/alice-agents/config.json`) and skips the prompt on subsequent runs; use `--global` or `--local` to override, or `--reset-preferences` to clear
+- **Windows CI** — CI matrix now runs on both `ubuntu-latest` and `windows-latest` to catch cross-platform issues
+
+---
+
 ## [0.7.0] — 2026-03-16
 
 ### ✨ Features

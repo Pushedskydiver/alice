@@ -7,6 +7,10 @@ import type { InstallLocation } from '~/types/install.js';
 import { bold, brightRed, dim, green, red } from '~/utils/ansi/ansi.js';
 import { copyDir } from '~/utils/fs/fs.js';
 import { addIgnoreEntries } from '~/utils/ignore/ignore.js';
+import {
+  getSavedLocation,
+  savePreferences,
+} from '~/utils/preferences/preferences.js';
 import { getVersion } from '~/utils/version/version.js';
 
 import { cleanExistingInstall } from '../clean/clean.js';
@@ -38,6 +42,12 @@ export const install = async (): Promise<void> => {
     return process.exit(0) as never;
   }
 
+  if (args.includes('--reset-preferences')) {
+    savePreferences({});
+    console.log('✓ Preferences cleared.');
+    return process.exit(0) as never;
+  }
+
   // Graceful Ctrl+C handling
   const handleSigint = (): void => {
     closePrompts();
@@ -64,19 +74,28 @@ export const install = async (): Promise<void> => {
     } else if (args.includes('--local')) {
       location = 'local';
     } else {
-      if (!process.stdin.isTTY) {
+      const saved = getSavedLocation();
+
+      if (saved) {
+        console.log(
+          `  Installing ${saved}ly ${dim(`(saved preference. Use --global or --local to override.)`)}`,
+        );
+        location = saved;
+      } else if (!process.stdin.isTTY) {
         console.error(
           red('Non-interactive environment detected. Use --global or --local.'),
         );
         console.error(dim('  Example: npx alice-agents --global'));
         closePrompts();
         return process.exit(1) as never;
+      } else {
+        const choice = await choose('  Where would you like to install?', [
+          `Global ${dim('(~/.claude)   — available in all projects')}`,
+          `Local  ${dim('(./.claude)  — this project only')}`,
+        ]);
+        location = choice === 0 ? 'global' : 'local';
+        savePreferences({ install_location: location });
       }
-      const choice = await choose('  Where would you like to install?', [
-        `Global ${dim('(~/.claude)   — available in all projects')}`,
-        `Local  ${dim('(./.claude)  — this project only')}`,
-      ]);
-      location = choice === 0 ? 'global' : 'local';
     }
 
     // Dry-run mode — show what would happen, then exit
