@@ -49,7 +49,7 @@ describe('loadRegistry', () => {
     const result = loadRegistry();
 
     expect(result.agents.length).toBeGreaterThanOrEqual(3);
-    expect(result.agents.map((a) => a.id)).toContain('clancy');
+    expect(result.agents.map((a: { id: string }) => a.id)).toContain('clancy');
   });
 
   it('accepts optional extended metadata fields', () => {
