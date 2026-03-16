@@ -7,6 +7,18 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [0.3.0] — 2026-03-16
+
+### ✨ Features
+
+- **`--help` flag** — print usage information and exit
+- **`--version` flag** — print version number and exit
+- **`--dry-run` flag** — preview install actions without modifying the filesystem
+- **Graceful Ctrl+C** — clean shutdown during interactive prompts
+- **CI detection** — require explicit `--global` or `--local` in non-interactive environments
+
+---
+
 ## [0.2.0] — 2026-03-14
 
 ### ✨ Features
