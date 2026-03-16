@@ -21,13 +21,13 @@ If **none** exist, this is a **greenfield project**. Note this for later.
 
 ### Framework and language detection
 
-If `package.json` exists, read it and check for:
-- **TypeScript**: `tsconfig.json` exists or `typescript` in devDependencies
-- **React**: `react` in dependencies
-- **Next.js**: `next` in dependencies or `next.config.*` exists
-- **Vue**: `vue` in dependencies or `nuxt` in dependencies
-- **Svelte**: `svelte` in dependencies or `@sveltejs/kit` in dependencies
-- **Express/Fastify**: `express` or `fastify` in dependencies
+If `package.json` exists, read it and check `dependencies`, `devDependencies`, and `peerDependencies` for:
+- **TypeScript**: `tsconfig.json` exists or `typescript` in any deps section
+- **React**: `react` in any deps section
+- **Next.js**: `next` in any deps section or `next.config.*` exists
+- **Vue**: `vue` or `nuxt` in any deps section
+- **Svelte**: `svelte` or `@sveltejs/kit` in any deps section
+- **Express/Fastify**: `express` or `fastify` in any deps section
 - **Monorepo**: `workspaces` field in `package.json`, or `pnpm-workspace.yaml` exists, or `lerna.json` exists
 
 Additionally, always check for non-JS languages (these apply regardless of whether `package.json` exists — polyglot and monorepo setups are common):
@@ -40,7 +40,7 @@ Similarly, **TypeScript** detection via `tsconfig.json` applies even without `pa
 
 ### Git host detection
 
-If `.git/config` exists, read it and check the remote URL:
+If `.git/config` exists, check the `origin` remote URL (fall back to the first remote if `origin` is not configured):
 - Contains `github.com` → **GitHub**
 - Contains `gitlab.com` → **GitLab**
 - Contains `bitbucket.org` → **Bitbucket**
@@ -76,12 +76,14 @@ If this is an **existing project**, present a brief summary of what was detected
 ```
 I scanned your project. Here's what I found:
 
-  {If framework detected}  Framework: {framework}
-  {If language detected}   Language: {language}
-  {If git_host detected}   Git host: {git_host}
+  {If framework detected}    Framework: {framework}
+  {If language detected}     Language: {language}
+  {If git_host detected}     Git host: {git_host}
   {If ci_provider detected}  CI: {ci_provider}
-  {If monorepo detected}   Monorepo: yes
+  {If monorepo detected}     Monorepo: yes
 ```
+
+Multiple values are allowed — if both React and Next.js are detected, show `Framework: Next.js, React`. If both TypeScript and Python are detected, show `Language: TypeScript, Python`. Use the most specific framework first (e.g. Next.js before React, since Next.js implies React).
 
 Only show lines where something was detected. Skip lines with no signal. If nothing beyond basic files was detected, skip this block entirely.
 
