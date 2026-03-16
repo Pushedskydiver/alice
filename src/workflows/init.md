@@ -78,8 +78,8 @@ I scanned your project. Here's what I found:
 
   {If framework detected}  Framework: {framework}
   {If language detected}   Language: {language}
-  {If git host detected}   Git host: {git host}
-  {If CI detected}         CI: {CI provider}
+  {If git_host detected}   Git host: {git_host}
+  {If ci_provider detected}  CI: {ci_provider}
   {If monorepo detected}   Monorepo: yes
 ```
 
@@ -287,4 +287,4 @@ Pass along all collected context:
 - `{board}` (Clancy only)
 - `{project_type}` (GSD and PAUL only)
 - Whether Alice is installed globally or locally
-- Detected framework, language, and Git host (for agent context)
+- Detected `{framework}`, `{language}`, `{git_host}`, `{ci_provider}` (for agent context)
