@@ -8,7 +8,7 @@ The package ships slash commands, workflows, a declarative agent registry, and l
 
 ## Installer flow
 
-1. **Entry point:** `npx alice-agents` runs `src/installer/install.ts`. The installer is split into focused modules: `paths.ts` (directory resolution), `hooks.ts` (settings.json management), `ui.ts` (help/dry-run/banner), `clean.ts` (reinstall cleanup), and `errors.ts` (recovery hints).
+1. **Entry point:** `npx alice-agents` runs `src/installer/install/install.ts`. The installer is split into focused submodules: `paths/` (directory resolution), `hooks/` (settings.json management), `ui/` (help/dry-run/banner), `clean/` (reinstall cleanup), and `errors/` (recovery hints).
 2. **Prompt:** The installer asks the user which agents to install and gathers preferences via `src/prompts/prompts.ts`.
 3. **Copy:** Slash command (`.md`) and workflow (`.md`) files are copied into the user's `.claude/` directory.
 4. **Register hooks:** CommonJS hook scripts from `hooks/` are registered with Claude Code's hook system.
@@ -17,7 +17,7 @@ The package ships slash commands, workflows, a declarative agent registry, and l
 
 Commands and workflows are plain Markdown files that Claude Code reads as slash command definitions.
 
-- **Commands** (`src/commands/`): `init.md`, `update.md`, `help.md` — these are the `/alice:init`, `/alice:update`, and `/alice:help` entry points.
+- **Commands** (`src/commands/`): `init.md`, `update.md`, `uninstall.md`, `help.md` — these are the `/alice:init`, `/alice:update`, `/alice:uninstall`, and `/alice:help` entry points.
 - **Workflows** (`src/workflows/`): `handoff-*.md` files that define how Alice hands control to a specific agent.
 
 Files use `@`-syntax references (e.g. `@registry/agents.json`) to pull in data from other parts of the project at runtime.
@@ -26,7 +26,7 @@ Files use `@`-syntax references (e.g. `@registry/agents.json`) to pull in data f
 
 The registry (`registry/agents.json`) is a declarative JSON file listing available agents. Each entry contains the agent's name, description, capabilities, and install metadata.
 
-This is the primary community contribution surface — adding a new agent means adding a JSON entry and a corresponding handoff workflow.
+This is the primary community contribution surface — adding a new agent means adding a JSON entry and a corresponding handoff workflow. See [REGISTRY.md](../REGISTRY.md) for field documentation and submission guidelines.
 
 ## Utilities
 
@@ -34,6 +34,7 @@ Shared utilities live in `src/utils/`, each in its own subfolder with co-located
 
 - **`ansi/`** — ANSI colour and style helpers (`red`, `green`, `bold`, `dim`, etc.)
 - **`fs/`** — Filesystem helpers (`copyDir` for recursive directory copying)
+- **`ignore/`** — Ignore file management (`addIgnoreEntries`, `removeIgnoreEntries`)
 - **`parse-json/`** — Safe JSON parsing that returns `null` instead of throwing
 - **`version/`** — Reads and validates the `version` field from `package.json`
 
