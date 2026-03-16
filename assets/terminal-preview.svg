@@ -38,7 +38,7 @@
     <text y="136" fill="#e05555" xml:space="preserve">  ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝╚══════╝</text>
 
     <!-- Version + tagline -->
-    <text y="172" fill="#e2e8f0">  <tspan font-weight="bold">v0.8.0</tspan><tspan fill="#8b5555">  Find the right AI coding agent for your project.</tspan></text>
+    <text y="172" fill="#e2e8f0">  <tspan font-weight="bold">v0.8.1</tspan><tspan fill="#8b5555">  Find the right AI coding agent for your project.</tspan></text>
     <text y="192" fill="#8b5555">  "My name is Alice, and I remember everything."</text>
 
     <!-- Interactive install prompt -->
