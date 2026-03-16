@@ -43,8 +43,13 @@ export const install = async (): Promise<void> => {
   }
 
   if (args.includes('--reset-preferences')) {
-    savePreferences({});
-    console.log('✓ Preferences cleared.');
+    try {
+      savePreferences({});
+      console.log('✓ Preferences cleared.');
+    } catch {
+      console.error(red('❌ Failed to clear preferences.'));
+      return process.exit(1) as never;
+    }
     return process.exit(0) as never;
   }
 
