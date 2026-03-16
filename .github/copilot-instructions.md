@@ -31,8 +31,9 @@ Alice is a Claude Code slash command installer and AI coding agent launcher. It 
 | `src/prompts/` | Interactive prompts |
 | `src/commands/` | Slash command Markdown files (init, update, uninstall, help) |
 | `src/workflows/` | Workflow Markdown files (init, uninstall, agent handoffs) |
-| `src/types/` | Shared type definitions (`agent.ts`, `install.ts`) |
-| `src/utils/` | Shared utilities (`ansi/`, `fs/`, `ignore/`, `parse-json/`, `version/`) |
+| `src/schemas/` | Zod schemas — single source of truth for validation and types (`agent.ts`) |
+| `src/types/` | Shared type definitions derived from schemas (`agent.ts`, `install.ts`) |
+| `src/utils/` | Shared utilities (`ansi/`, `fs/`, `ignore/`, `parse-json/`, `registry/`, `version/`) |
 | `registry/agents.json` | Declarative agent registry |
 | `hooks/` | CommonJS hooks (session start, notifications) |
 | `dist/` | Compiled output (git-ignored) |

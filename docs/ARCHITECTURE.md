@@ -26,7 +26,7 @@ Files use `@`-syntax references (e.g. `@registry/agents.json`) to pull in data f
 
 The registry (`registry/agents.json`) is a declarative JSON file listing available agents. Each entry contains the agent's name, description, capabilities, install metadata, and optional extended fields (tags, OS support, versioning, lifecycle status).
 
-The registry is validated at build time and in CI using a zod/mini schema defined in `src/types/agent.ts`. The `Agent` and `AgentRegistry` types are derived from this schema via `z.infer<>`, ensuring types and validation never drift apart. Run `npm run validate:registry` to check locally.
+The registry is validated at build time and in CI using a zod/mini schema defined in `src/schemas/agent.ts`. The `Agent` and `AgentRegistry` types in `src/types/agent.ts` are derived from this schema via `z.infer<>`, ensuring types and validation never drift apart. Run `npm run validate:registry` to check locally.
 
 This is the primary community contribution surface — adding a new agent means adding a JSON entry and a corresponding handoff workflow. See [REGISTRY.md](../REGISTRY.md) for field documentation and submission guidelines.
 
