@@ -1,6 +1,6 @@
 {
   "name": "alice-agents",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Find the right AI coding agent for your project",
   "type": "module",
   "engines": {
@@ -27,6 +27,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
+    "validate:registry": "node dist/utils/registry/validate.js",
     "prepublishOnly": "npm run build",
     "prepare": "husky"
   },
@@ -64,6 +65,7 @@
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.0",
+    "zod": "^4.3.6"
   }
 }

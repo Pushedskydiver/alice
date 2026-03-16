@@ -7,6 +7,17 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [0.6.0] — 2026-03-16
+
+### ✨ Features
+
+- **Registry schema validation** — `registry/agents.json` validated against a zod/mini schema at build time and in CI (`npm run validate:registry`)
+- **Type-schema unification** — `Agent` and `AgentRegistry` types derived from zod schema via `z.infer<>`, eliminating type/validation drift
+- **Extended registry metadata** — new optional fields: `tags`, `min_node_version`, `os_support`, `deprecated`, `experimental`
+- **Registry utility** — `src/utils/registry/` with `loadRegistry()` for validated JSON loading
+
+---
+
 ## [0.5.0] — 2026-03-16
 
 ### ✨ Features

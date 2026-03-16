@@ -31,6 +31,18 @@
 | `new_project_slash` | `string` | Slash command to start a new project (e.g. `"/gsd:new-project"`) |
 | `map_codebase_slash` | `string` | Slash command to scan an existing codebase (e.g. `"/clancy:map-codebase"`) |
 
+## Extended metadata fields
+
+These optional fields improve discovery, filtering, and compatibility checks.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `tags` | `string[]` | Searchable tags describing the agent's approach (e.g. `["board-driven", "autonomous"]`) |
+| `min_node_version` | `string` | Minimum Node.js version required (e.g. `">=22.0.0"`) |
+| `os_support` | `string[]` | Supported operating systems (e.g. `["macos", "linux", "windows"]`) |
+| `deprecated` | `boolean` | Set to `true` to mark an agent as deprecated — Alice will warn users |
+| `experimental` | `boolean` | Set to `true` for agents in early/preview stage — Alice will note this |
+
 ## Example entry
 
 Below is Clancy's full entry from `registry/agents.json`:
@@ -51,9 +63,24 @@ Below is Clancy's full entry from `registry/agents.json`:
   "init_slash": "/clancy:init",
   "map_codebase_slash": "/clancy:map-codebase",
   "supports_existing_project": true,
-  "supports_greenfield": true
+  "supports_greenfield": true,
+  "tags": ["board-driven", "autonomous", "ticket-execution", "roles"],
+  "min_node_version": ">=22.0.0",
+  "os_support": ["macos", "linux", "windows"],
+  "deprecated": false,
+  "experimental": false
 }
 ```
+
+## Validation
+
+The registry is validated against a zod schema at build time and in CI. Run locally:
+
+```bash
+npm run validate:registry
+```
+
+This catches missing required fields, invalid formats (e.g. uppercase IDs, malformed URLs), and type mismatches before they reach production.
 
 ## Submission process
 

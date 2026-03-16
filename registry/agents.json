@@ -15,7 +15,12 @@
       "init_slash": "/clancy:init",
       "map_codebase_slash": "/clancy:map-codebase",
       "supports_existing_project": true,
-      "supports_greenfield": true
+      "supports_greenfield": true,
+      "tags": ["board-driven", "autonomous", "ticket-execution", "roles"],
+      "min_node_version": ">=22.0.0",
+      "os_support": ["macos", "linux", "windows"],
+      "deprecated": false,
+      "experimental": false
     },
     {
       "id": "gsd",
@@ -30,7 +35,12 @@
       "new_project_slash": "/gsd:new-project",
       "map_codebase_slash": "/gsd:map-codebase",
       "supports_existing_project": true,
-      "supports_greenfield": true
+      "supports_greenfield": true,
+      "tags": ["speed-first", "parallel", "multi-runtime", "subagents"],
+      "min_node_version": ">=22.0.0",
+      "os_support": ["macos", "linux", "windows"],
+      "deprecated": false,
+      "experimental": false
     },
     {
       "id": "paul",
@@ -44,7 +54,12 @@
       "init_slash": "/paul:init",
       "map_codebase_slash": "/paul:map-codebase",
       "supports_existing_project": true,
-      "supports_greenfield": true
+      "supports_greenfield": true,
+      "tags": ["quality-first", "bdd", "traceability", "loop-closure"],
+      "min_node_version": ">=22.0.0",
+      "os_support": ["macos", "linux", "windows"],
+      "deprecated": false,
+      "experimental": false
     }
   ]
 }
