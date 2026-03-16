@@ -7,7 +7,7 @@ Alice is a Claude Code slash command installer and AI coding agent launcher. It 
 
 ## Key paths
 
-- `src/installer/` — CLI entry point and installer modules (`install.ts`, `paths.ts`, `hooks.ts`, `ui.ts`, `clean.ts`, `errors.ts`)
+- `src/installer/` — CLI entry point and installer modules (`install/`, `paths/`, `hooks/`, `ui/`, `clean/`, `errors/`)
 - `src/prompts/` — Interactive prompts (`prompts.ts`)
 - `src/commands/` — Slash command Markdown files: `init.md`, `update.md`, `uninstall.md`, `help.md`
 - `src/workflows/` — Workflow Markdown files: `init.md`, `uninstall.md`, `handoff-*.md`

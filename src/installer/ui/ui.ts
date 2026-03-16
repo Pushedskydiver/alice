@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import type { InstallLocation } from '~/types/install.js';
 import { dim, red } from '~/utils/ansi/ansi.js';
 
-import { getTargetDir } from './paths.js';
+import { getTargetDir } from '../paths/paths.js';
 
 /** ASCII banner displayed at the start of the installer. */
 export const BANNER = `

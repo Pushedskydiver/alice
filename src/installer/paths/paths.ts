@@ -9,9 +9,9 @@ const __dirname = dirname(__filename);
 /**
  * Returns the absolute path to the package root directory.
  *
- * @returns The resolved path two levels above `__dirname`.
+ * @returns The resolved path to the package root directory.
  */
-export const getSourceRoot = (): string => resolve(__dirname, '..', '..');
+export const getSourceRoot = (): string => resolve(__dirname, '..', '..', '..');
 
 /**
  * Returns the user's home directory from environment variables.

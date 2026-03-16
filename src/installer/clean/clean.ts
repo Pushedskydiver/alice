@@ -5,7 +5,7 @@ import type { InstallLocation } from '~/types/install.js';
 import { green } from '~/utils/ansi/ansi.js';
 import { removeIgnoreEntries } from '~/utils/ignore/ignore.js';
 
-import { getTargetDir } from './paths.js';
+import { getTargetDir } from '../paths/paths.js';
 
 /**
  * Removes a previous Alice installation so a fresh install can proceed.

@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 
 import type { InstallLocation } from '~/types/install.js';
 
-import { getSourceRoot, getTargetDir } from './paths.js';
+import { getSourceRoot, getTargetDir } from '../paths/paths.js';
 
 /**
  * Registers Alice's hook scripts (update checker, context monitor) in

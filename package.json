@@ -7,7 +7,7 @@
     "node": ">=22.0.0"
   },
   "bin": {
-    "alice-agents": "dist/installer/install.js"
+    "alice-agents": "dist/installer/install/install.js"
   },
   "files": [
     "dist/",

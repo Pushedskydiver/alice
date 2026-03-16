@@ -10,11 +10,11 @@ import { copyDir } from '~/utils/fs/fs.js';
 import { addIgnoreEntries } from '~/utils/ignore/ignore.js';
 import { getVersion } from '~/utils/version/version.js';
 
-import { cleanExistingInstall } from './clean.js';
-import { printErrorHint } from './errors.js';
-import { registerHooks } from './hooks.js';
-import { getSourceRoot, getTargetDir } from './paths.js';
-import { BANNER, showDryRun, showHelp } from './ui.js';
+import { cleanExistingInstall } from '../clean/clean.js';
+import { printErrorHint } from '../errors/errors.js';
+import { registerHooks } from '../hooks/hooks.js';
+import { getSourceRoot, getTargetDir } from '../paths/paths.js';
+import { BANNER, showDryRun, showHelp } from '../ui/ui.js';
 
 /**
  * Main installer entry point. Displays the ASCII banner, prompts for
