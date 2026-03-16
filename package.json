@@ -27,7 +27,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "validate:registry": "npm run build && node dist/utils/registry/validate.js",
+    "validate:registry": "node dist/utils/registry/validate.js",
     "prepublishOnly": "npm run build",
     "prepare": "husky"
   },
