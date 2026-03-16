@@ -20,13 +20,24 @@ Wait for install to complete.
 If existing project:
 ```
 ✓ GSD is installed.
-  Run /gsd:map-codebase to scan your codebase, then /gsd:new-project to start.
+
+Next steps:
+  1. Run /gsd:map-codebase to scan your codebase
+  2. Run /gsd:new-project to start your first task
+  3. Describe what you want built — GSD handles the rest
+
+Docs: https://github.com/glittercowboy/get-shit-done
 ```
 
 If greenfield:
 ```
 ✓ GSD is installed.
-  Run /gsd:new-project to start.
+
+Next steps:
+  1. Run /gsd:new-project to scaffold your project
+  2. Describe what you want built — GSD handles the rest
+
+Docs: https://github.com/glittercowboy/get-shit-done
 ```
 
 Confirm before running any suggested command.

@@ -7,6 +7,21 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [0.5.0] — 2026-03-16
+
+### ✨ Features
+
+- **`--reinstall` flag** — remove existing Alice files and install fresh, useful for corrupted installs or upgrades
+- **Richer handoff summaries** — numbered next steps with docs links for Clancy, GSD, and PAUL
+- **Registry guide** — `REGISTRY.md` with field documentation, examples, and submission checklist
+- **Agent submission PR template** — structured checklist for community agent contributions
+
+### ♻️ Refactoring
+
+- **Split installer into focused modules** — `paths.ts`, `hooks.ts`, `ui.ts`, `clean.ts`, `errors.ts` for better testability and maintainability
+
+---
+
 ## [0.4.0] — 2026-03-16
 
 ### ✨ Features

@@ -16,17 +16,32 @@ Wait for install to complete.
 
 ## Post-install
 
-Print:
+If existing project:
 ```
 ✓ Clancy is installed.
-  Run /clancy:init to connect your {board} board and finish setup.
+
+Next steps:
+  1. Run /clancy:init to connect your {board} board
+  2. Run /clancy:map-codebase to scan your codebase
+  3. Start with /clancy:once to pick up your first ticket
+
+Docs: https://ghuntley.com/ralph/
 ```
 
-Do NOT run /clancy:init — Clancy owns its own wizard.
+If greenfield:
+```
+✓ Clancy is installed.
+
+Next steps:
+  1. Run /clancy:init to connect your {board} board
+  2. Start with /clancy:once to pick up your first ticket
+
+Docs: https://ghuntley.com/ralph/
+```
 
 If the user mentioned interest in Planner or Strategist roles, add:
-```
-💡 During /clancy:init you can enable optional roles like Planner for ticket refinement.
-```
+  💡 During /clancy:init you can enable optional roles like Planner for ticket refinement.
+
+Confirm before running any suggested command.
 
 Print: "Good luck."

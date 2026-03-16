@@ -22,13 +22,24 @@ Wait for install to complete.
 If existing project:
 ```
 ✓ PAUL is installed.
-  Run /paul:map-codebase to scan your codebase, then /paul:init to start.
+
+Next steps:
+  1. Run /paul:map-codebase to scan your codebase
+  2. Run /paul:init to configure planning rules
+  3. Describe a feature — PAUL will plan before coding
+
+Docs: https://github.com/ChristopherKahler/paul
 ```
 
 If greenfield:
 ```
 ✓ PAUL is installed.
-  Run /paul:init to start.
+
+Next steps:
+  1. Run /paul:init to configure planning rules
+  2. Describe a feature — PAUL will plan before coding
+
+Docs: https://github.com/ChristopherKahler/paul
 ```
 
 Confirm before running any suggested command.

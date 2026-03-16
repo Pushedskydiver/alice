@@ -1,13 +1,13 @@
 {
   "name": "alice-agents",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Find the right AI coding agent for your project",
   "type": "module",
   "engines": {
     "node": ">=22.0.0"
   },
   "bin": {
-    "alice-agents": "dist/installer/install.js"
+    "alice-agents": "dist/installer/install/install.js"
   },
   "files": [
     "dist/",

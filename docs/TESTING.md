@@ -9,8 +9,8 @@ Alice uses [Vitest](https://vitest.dev/) with globals enabled, so `describe`, `i
 Test files live next to their source files with the naming convention `*.test.ts`:
 
 ```
-src/installer/install.ts
-src/installer/install.test.ts
+src/installer/paths/paths.ts
+src/installer/paths/paths.test.ts
 src/utils/ansi/ansi.ts
 src/utils/ansi/ansi.test.ts
 ```

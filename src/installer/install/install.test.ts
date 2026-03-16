@@ -1,175 +1,16 @@
 import { randomUUID } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  getHomeDir,
-  getTargetDir,
-  install,
-  printErrorHint,
-  registerHooks,
-} from './install.js';
+import { install } from './install.js';
 
 const makeTmpDir = (): string => {
   const dir = join(tmpdir(), `alice-test-${randomUUID()}`);
   mkdirSync(dir, { recursive: true });
   return dir;
 };
-
-describe('getHomeDir', () => {
-  const originalHome = process.env.HOME;
-  const originalUserProfile = process.env.USERPROFILE;
-
-  afterEach(() => {
-    process.env.HOME = originalHome;
-    process.env.USERPROFILE = originalUserProfile;
-  });
-
-  it('returns HOME when set', () => {
-    process.env.HOME = '/test/home';
-    expect(getHomeDir()).toBe('/test/home');
-  });
-
-  it('falls back to USERPROFILE when HOME is not set', () => {
-    delete process.env.HOME;
-    process.env.USERPROFILE = 'C:\\Users\\test';
-    expect(getHomeDir()).toBe('C:\\Users\\test');
-  });
-
-  it('throws when neither HOME nor USERPROFILE is set', () => {
-    delete process.env.HOME;
-    delete process.env.USERPROFILE;
-    expect(() => getHomeDir()).toThrow('Cannot determine home directory');
-  });
-});
-
-describe('getTargetDir', () => {
-  const originalHome = process.env.HOME;
-
-  afterEach(() => {
-    process.env.HOME = originalHome;
-  });
-
-  it('returns ~/.claude for global installs', () => {
-    process.env.HOME = '/test/home';
-    expect(getTargetDir('global')).toBe(join('/test/home', '.claude'));
-  });
-
-  it('returns ./.claude for local installs', () => {
-    const result = getTargetDir('local');
-    expect(result).toBe(join(process.cwd(), '.claude'));
-  });
-});
-
-describe('registerHooks', () => {
-  let tmp: string;
-  const originalHome = process.env.HOME;
-  const originalCwd = process.cwd;
-
-  beforeEach(() => {
-    tmp = makeTmpDir();
-    vi.spyOn(process, 'cwd').mockReturnValue(tmp);
-  });
-
-  afterEach(() => {
-    process.env.HOME = originalHome;
-    process.cwd = originalCwd;
-    rmSync(tmp, { recursive: true, force: true });
-  });
-
-  it('writes settings.json with hook entries', () => {
-    registerHooks('local');
-
-    const settingsPath = join(tmp, '.claude', 'settings.json');
-    expect(existsSync(settingsPath)).toBe(true);
-
-    const settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as {
-      hooks: Record<string, { command: string; type: string }[]>;
-    };
-
-    expect(settings.hooks.SessionStart).toBeDefined();
-    expect(settings.hooks.Notification).toBeDefined();
-    expect(settings.hooks.SessionStart.length).toBe(1);
-    expect(settings.hooks.Notification.length).toBe(1);
-    expect(settings.hooks.SessionStart[0].command).toContain(
-      'alice-check-update',
-    );
-    expect(settings.hooks.Notification[0].command).toContain(
-      'alice-context-monitor',
-    );
-  });
-
-  it('quotes hook paths in commands', () => {
-    registerHooks('local');
-
-    const settingsPath = join(tmp, '.claude', 'settings.json');
-    const settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as {
-      hooks: Record<string, { command: string }[]>;
-    };
-
-    expect(settings.hooks.SessionStart[0].command).toMatch(/^node ".*"$/);
-    expect(settings.hooks.Notification[0].command).toMatch(/^node ".*"$/);
-  });
-
-  it('preserves existing settings when adding hooks', () => {
-    const settingsDir = join(tmp, '.claude');
-    mkdirSync(settingsDir, { recursive: true });
-    writeFileSync(
-      join(settingsDir, 'settings.json'),
-      JSON.stringify({ customKey: 'preserved' }),
-    );
-
-    registerHooks('local');
-
-    const settings = JSON.parse(
-      readFileSync(join(settingsDir, 'settings.json'), 'utf-8'),
-    ) as { customKey: string };
-    expect(settings.customKey).toBe('preserved');
-  });
-
-  it('does not duplicate hooks on repeated calls', () => {
-    registerHooks('local');
-    registerHooks('local');
-
-    const settingsPath = join(tmp, '.claude', 'settings.json');
-    const settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as {
-      hooks: Record<string, { command: string }[]>;
-    };
-
-    expect(settings.hooks.SessionStart.length).toBe(1);
-    expect(settings.hooks.Notification.length).toBe(1);
-  });
-
-  it('handles corrupted settings.json gracefully', () => {
-    const settingsDir = join(tmp, '.claude');
-    mkdirSync(settingsDir, { recursive: true });
-    writeFileSync(join(settingsDir, 'settings.json'), 'not json');
-
-    registerHooks('local');
-
-    const settings = JSON.parse(
-      readFileSync(join(settingsDir, 'settings.json'), 'utf-8'),
-    ) as {
-      hooks: Record<string, { command: string }[]>;
-    };
-    expect(settings.hooks.SessionStart).toBeDefined();
-  });
-
-  it('uses global path when location is global', () => {
-    const globalHome = makeTmpDir();
-    process.env.HOME = globalHome;
-
-    registerHooks('global');
-
-    const settingsPath = join(globalHome, '.claude', 'settings.json');
-    expect(existsSync(settingsPath)).toBe(true);
-
-    rmSync(globalHome, { recursive: true, force: true });
-  });
-});
 
 describe('install', () => {
   let tmp: string;
@@ -368,40 +209,29 @@ describe('install', () => {
       expect.stringContaining('Cannot use both'),
     );
   });
-});
 
-describe('printErrorHint', () => {
-  beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-  });
+  it('--reinstall --local cleans then installs', async () => {
+    process.argv = ['node', 'install.js', '--local'];
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+    // First install
+    await install();
 
-  it('suggests --local for EACCES errors', () => {
-    printErrorHint('EACCES: permission denied');
-    expect(console.error).toHaveBeenCalledWith(
-      expect.stringContaining('--local'),
-    );
-  });
+    const commandsDir = join(tmp, '.claude', 'commands', 'alice');
+    expect(existsSync(commandsDir)).toBe(true);
 
-  it('suggests --local for EPERM errors', () => {
-    printErrorHint('EPERM: operation not permitted');
-    expect(console.error).toHaveBeenCalledWith(
-      expect.stringContaining('--local'),
-    );
-  });
+    // Reinstall
+    process.argv = ['node', 'install.js', '--reinstall', '--local'];
+    await install();
 
-  it('handles mixed case permission messages', () => {
-    printErrorHint('Permission Denied on /usr/local');
-    expect(console.error).toHaveBeenCalledWith(
-      expect.stringContaining('--local'),
-    );
-  });
+    // Should still exist after reinstall (cleaned then re-created)
+    expect(existsSync(commandsDir)).toBe(true);
 
-  it('prints nothing for unknown errors', () => {
-    printErrorHint('something else went wrong');
-    expect(console.error).not.toHaveBeenCalled();
+    // Verify hooks are not duplicated
+    const settingsPath = join(tmp, '.claude', 'settings.json');
+    const settings = JSON.parse(readFileSync(settingsPath, 'utf-8')) as {
+      hooks: Record<string, { command: string }[]>;
+    };
+    expect(settings.hooks.SessionStart).toHaveLength(1);
+    expect(settings.hooks.Notification).toHaveLength(1);
   });
 });
