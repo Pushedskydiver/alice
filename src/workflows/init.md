@@ -4,7 +4,7 @@
 
 ## Step 1: Detect Project State
 
-Before asking anything, scan the current directory silently.
+Before asking anything, scan the current directory silently. Collect all signals before presenting anything to the user.
 
 ### Existing project detection
 
@@ -19,15 +19,75 @@ If **any** of these exist, this is an **existing project**. Note this for later.
 
 If **none** exist, this is a **greenfield project**. Note this for later.
 
+### Framework and language detection
+
+If `package.json` exists, read it and check `dependencies`, `devDependencies`, and `peerDependencies` for:
+- **TypeScript**: `tsconfig.json` exists or `typescript` in any deps section
+- **React**: `react` in any deps section
+- **Next.js**: `next` in any deps section or `next.config.*` exists
+- **Vue**: `vue` or `nuxt` in any deps section
+- **Svelte**: `svelte` or `@sveltejs/kit` in any deps section
+- **Express/Fastify**: `express` or `fastify` in any deps section
+- **Monorepo**: `workspaces` field in `package.json`, or `pnpm-workspace.yaml` exists, or `lerna.json` exists
+
+Additionally, always check for non-JS languages (these apply regardless of whether `package.json` exists — polyglot and monorepo setups are common):
+- **Python**: `requirements.txt`, `pyproject.toml`, or `setup.py`
+- **Go**: `go.mod`
+- **Rust**: `Cargo.toml`
+- **Java**: `pom.xml`, `build.gradle`, or `build.gradle.kts`
+
+Similarly, **TypeScript** detection via `tsconfig.json` applies even without `package.json`.
+
+### Git host detection
+
+If `.git/config` exists, check the `origin` remote URL (fall back to the first remote if `origin` is not configured):
+- Contains `github.com` → **GitHub**
+- Contains `gitlab.com` → **GitLab**
+- Contains `bitbucket.org` → **Bitbucket**
+
+### CI detection
+
+Check for:
+- `.github/workflows/` → **GitHub Actions**
+- `.gitlab-ci.yml` → **GitLab CI**
+- `.circleci/` → **CircleCI**
+- `Jenkinsfile` → **Jenkins**
+
 ### Existing agent detection
 
-Check for the presence of:
-- `.clancy/`
-- `.gsd/`
-- `.paul/`
-- `.planning/`
+Check for agent command directories (installed by the agents themselves):
+- `.claude/commands/clancy/` → Clancy
+- `.claude/commands/gsd/` → GSD
+- `.claude/commands/paul/` → PAUL
 
-If **any** of these exist, an agent is already installed. Inform the user:
+Also check for legacy agent config directories (created by older agent versions):
+- `.clancy/` → Clancy (legacy)
+- `.gsd/` → GSD (legacy)
+- `.paul/` or `.planning/` → PAUL (legacy)
+
+If **any** of these exist, an agent is already installed.
+
+---
+
+## Step 1b: Present Detected Context
+
+If this is an **existing project**, present a brief summary of what was detected:
+
+```
+I scanned your project. Here's what I found:
+
+  {If framework detected}    Framework: {framework}
+  {If language detected}     Language: {language}
+  {If git_host detected}     Git host: {git_host}
+  {If ci_provider detected}  CI: {ci_provider}
+  {If monorepo detected}     Monorepo: yes
+```
+
+Multiple values are allowed — if both React and Next.js are detected, show `Framework: Next.js, React`. If both TypeScript and Python are detected, show `Language: TypeScript, Python`. Use the most specific framework first (e.g. Next.js before React, since Next.js implies React).
+
+Only show lines where something was detected. Skip lines with no signal. If nothing beyond basic files was detected, skip this block entirely.
+
+If an **existing agent** is detected, inform the user:
 
 ```
 It looks like you already have an agent installed here.
@@ -46,12 +106,23 @@ If the user declines, stop.
 
 ## Step 2: Core Question
 
-Ask:
+If **GitHub** was detected as the Git host, add a contextual hint:
 
 ```
 How do you track work for this project?
 
-1. Board (Jira, Linear, Trello, GitHub Projects, etc.)
+1. Board (Jira, Linear, GitHub Issues, etc.)
+2. Locally / no board
+
+💡 Tip: Since your project is on GitHub, Clancy can connect directly to GitHub Issues.
+```
+
+Otherwise, ask without the hint:
+
+```
+How do you track work for this project?
+
+1. Board (Jira, Linear, GitHub Issues, etc.)
 2. Locally / no board
 ```
 
@@ -59,8 +130,6 @@ How do you track work for this project?
 - If **2 (Local / no board)** → Go to Q2.
 
 ### Q2: What matters most?
-
-Ask:
 
 ```
 What matters most to you?
@@ -82,13 +151,13 @@ What matters most to you?
 
 ### Clancy follow-ups
 
-Ask:
+If **GitHub** was detected as the Git host, pre-select GitHub Issues:
 
 ```
 What board do you use?
 
 1. Jira
-2. GitHub Issues
+2. GitHub Issues {If GitHub detected: ← detected}
 3. Linear
 4. Other
 ```
@@ -100,27 +169,35 @@ Store the answer as `{board}`.
 
 ### GSD follow-ups
 
-Confirm the project type detected in Step 1:
+Confirm the project type detected in Step 1. Show detected signals as evidence:
 
 ```
 Is this an existing codebase or a brand-new (greenfield) project?
 
+{If signals detected: We detected: package.json, src/, .git}
+
 1. Existing codebase
 2. Greenfield
 ```
+
+Pre-select the option matching what was detected in Step 1, but let the user override.
 
 Store the answer as `{project_type}`.
 
 ### PAUL follow-ups
 
-Confirm the project type detected in Step 1:
+Confirm the project type detected in Step 1. Show detected signals as evidence:
 
 ```
 Is this an existing codebase or a brand-new (greenfield) project?
 
+{If signals detected: We detected: package.json, src/, .git}
+
 1. Existing codebase
 2. Greenfield
 ```
+
+Pre-select the option matching what was detected in Step 1, but let the user override.
 
 Store the answer as `{project_type}`.
 
@@ -133,16 +210,23 @@ Present the recommended agent summary and ask for confirmation.
 ### Clancy Summary
 
 ```
-Recommended agent: Clancy (Chief of Staff)
+Recommended agent: Clancy
 
-Clancy connects to your {board} board and manages the full ticket lifecycle:
-- Pulls tickets from your board automatically
-- Plans implementation based on your codebase
-- Executes work in isolated branches
-- Submits PRs and updates ticket status
+Clancy is an autonomous, board-driven development agent — named after Chief
+Clancy Wiggum (Ralph's dad, The Simpsons). It's built on the Ralph technique
+coined by Geoffrey Huntley: a loop that gives Claude Code a fresh context
+window for every task.
 
-Clancy works best when you have a board with tickets ready to go.
-He handles the coordination so you can focus on direction.
+Once installed, Clancy will:
+  ✓ Connect to your {board} board
+  ✓ Pick up tickets assigned to you
+  ✓ Implement each one with full codebase context
+  ✓ Commit, merge, and transition tickets on the board
+  ✓ Log progress and loop until your queue is empty
+
+Optional roles available:
+  • Planner — refine backlog tickets into implementation plans
+  • Strategist (coming soon) — turn vague ideas into structured briefs and tickets
 
 Install Clancy? (y/n)
 ```
@@ -152,14 +236,17 @@ Install Clancy? (y/n)
 ```
 Recommended agent: GSD (Get Shit Done)
 
-GSD is a lightweight, speed-first development agent:
-- Minimal setup, maximum output
-- Works from local task lists or inline instructions
-- Ships code fast with pragmatic quality checks
-- No board integration needed
+GSD is a spec-driven development system by TÂCHES that uses parallel
+subagent execution to move fast. Each executor gets a fresh 200k-token
+context window — no context rot, no quality degradation.
 
-GSD works best when you want to move fast and skip ceremony.
-Point it at a problem and get out of the way.
+Once installed, GSD will:
+  ✓ {If existing: Scan your codebase / If greenfield: Set up project structure}
+  ✓ Build a roadmap broken into phases
+  ✓ Execute plans in parallel waves via subagents
+  ✓ Verify work with automated checks and UAT
+
+GSD also works with OpenCode, Gemini CLI, and Codex — not just Claude Code.
 
 Install GSD? (y/n)
 ```
@@ -167,16 +254,19 @@ Install GSD? (y/n)
 ### PAUL Summary
 
 ```
-Recommended agent: PAUL (Planning, Architecture, Understanding, Learning)
+Recommended agent: PAUL (Plan-Apply-Unify Loop)
 
-PAUL is a structured development agent focused on quality:
-- Creates detailed implementation plans before writing code
-- Enforces architecture patterns and coding standards
-- Reviews its own work against acceptance criteria
-- Learns from your codebase to improve over time
+PAUL is a quality-first development framework by Christopher Kahler.
+Every piece of work follows a mandatory Plan → Apply → Unify cycle with
+BDD acceptance criteria — orphan plans are prohibited, every plan closes.
 
-PAUL works best when you care about maintainability and correctness.
-He takes a little longer but the output is solid.
+Once installed, PAUL will:
+  ✓ {If existing: Scan your codebase / If greenfield: Set up project structure}
+  ✓ Create phased roadmaps with milestones
+  ✓ Enforce acceptance criteria (Given/When/Then) before work begins
+  ✓ Close every loop with a SUMMARY reconciling planned vs actual
+
+PAUL is ideal when traceability and correctness matter as much as speed.
 
 Install PAUL? (y/n)
 ```
@@ -199,3 +289,4 @@ Pass along all collected context:
 - `{board}` (Clancy only)
 - `{project_type}` (GSD and PAUL only)
 - Whether Alice is installed globally or locally
+- Detected `{framework}`, `{language}`, `{git_host}`, `{ci_provider}` (for agent context)

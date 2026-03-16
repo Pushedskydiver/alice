@@ -7,6 +7,17 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [0.7.0] — 2026-03-16
+
+### ✨ Features
+
+- **Smarter project detection** — init wizard now detects frameworks (React, Next.js, Vue, Svelte, Express/Fastify), languages (TypeScript, Python, Go, Rust, Java), Git host (GitHub, GitLab, Bitbucket), CI provider, and monorepo structure
+- **Contextual recommendations** — detected signals are surfaced before asking questions; GitHub projects get a hint about Clancy's GitHub Issues integration
+- **Evidence-based confirmation** — project type confirmation now shows what was detected (e.g. "We detected: package.json, src/, .git")
+- **Improved agent summaries** — updated Clancy, GSD, and PAUL summaries to match bootstrap spec with full descriptions and feature lists
+
+---
+
 ## [0.6.0] — 2026-03-16
 
 ### ✨ Features
