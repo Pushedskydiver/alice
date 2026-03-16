@@ -24,7 +24,9 @@ Files use `@`-syntax references (e.g. `@registry/agents.json`) to pull in data f
 
 ## Agent registry
 
-The registry (`registry/agents.json`) is a declarative JSON file listing available agents. Each entry contains the agent's name, description, capabilities, and install metadata.
+The registry (`registry/agents.json`) is a declarative JSON file listing available agents. Each entry contains the agent's name, description, capabilities, install metadata, and optional extended fields (tags, OS support, versioning, lifecycle status).
+
+The registry is validated at build time and in CI using a zod/mini schema defined in `src/types/agent.ts`. The `Agent` and `AgentRegistry` types are derived from this schema via `z.infer<>`, ensuring types and validation never drift apart. Run `npm run validate:registry` to check locally.
 
 This is the primary community contribution surface — adding a new agent means adding a JSON entry and a corresponding handoff workflow. See [REGISTRY.md](../REGISTRY.md) for field documentation and submission guidelines.
 
@@ -36,6 +38,7 @@ Shared utilities live in `src/utils/`, each in its own subfolder with co-located
 - **`fs/`** — Filesystem helpers (`copyDir` for recursive directory copying)
 - **`ignore/`** — Ignore file management (`addIgnoreEntries`, `removeIgnoreEntries`)
 - **`parse-json/`** — Safe JSON parsing that returns `null` instead of throwing
+- **`registry/`** — Registry loading and validation (`loadRegistry`, `validate.ts`)
 - **`version/`** — Reads and validates the `version` field from `package.json`
 
 Shared types live in `src/types/`:

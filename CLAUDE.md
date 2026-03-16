@@ -12,7 +12,7 @@ Alice is a Claude Code slash command installer and AI coding agent launcher. It 
 - `src/commands/` — Slash command Markdown files: `init.md`, `update.md`, `uninstall.md`, `help.md`
 - `src/workflows/` — Workflow Markdown files: `init.md`, `uninstall.md`, `handoff-*.md`
 - `src/types/` — Shared type definitions (`agent.ts`, `install.ts`)
-- `src/utils/` — Shared utilities (`ansi/`, `fs/`, `ignore/`, `parse-json/`, `version/`)
+- `src/utils/` — Shared utilities (`ansi/`, `fs/`, `ignore/`, `parse-json/`, `registry/`, `version/`)
 - `registry/agents.json` — Declarative agent registry (JSON)
 - `hooks/` — CommonJS hooks loaded by Claude Code (`alice-check-update.js`, `alice-context-monitor.js`)
 - `dist/` — Build output (git-ignored)
@@ -36,6 +36,7 @@ Alice is a Claude Code slash command installer and AI coding agent launcher. It 
 | `npm run lint` | ESLint |
 | `npm run lint:fix` | ESLint with auto-fix |
 | `npm run format` | Prettier format |
+| `npm run validate:registry` | Validate registry/agents.json against zod schema |
 
 ## Commit format
 
@@ -51,7 +52,7 @@ Example: `feat(installer): add wizard`
 
 - **TypeScript ESM** — all source uses ESM (`"type": "module"`).
 - **CommonJS hooks** — hooks are `.js` because Claude Code loads them with `require()`.
-- **Registry-driven** — agents are declared in `registry/agents.json`, not hard-coded.
+- **Registry-driven** — agents are declared in `registry/agents.json`, validated with zod/mini.
 - **Pure launcher** — Alice contains zero agent implementation code.
 - Use `type` not `interface` for type definitions.
 - Co-locate tests (`*.test.ts`) next to source files.
