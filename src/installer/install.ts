@@ -162,7 +162,6 @@ const showHelp = (version: string): never => {
  */
 const showDryRun = (location: InstallLocation): void => {
   const targetDir = getTargetDir(location);
-  const sourceRoot = getSourceRoot();
 
   console.log();
   console.log(dim('[dry-run] No files will be modified.'));
@@ -178,7 +177,7 @@ const showDryRun = (location: InstallLocation): void => {
     `  Would register hooks in: ${dim(join(targetDir, 'settings.json'))}`,
   );
   if (location === 'local') {
-    console.log(`  Would update ignore files in: ${dim(sourceRoot)}`);
+    console.log(`  Would update ignore files in: ${dim(process.cwd())}`);
   }
 };
 
@@ -196,7 +195,7 @@ export const install = async (): Promise<void> => {
 
   // Early-exit flags (before banner)
   if (args.includes('--help')) {
-    showHelp(version);
+    return showHelp(version);
   }
 
   if (args.includes('--version')) {
@@ -212,79 +211,79 @@ export const install = async (): Promise<void> => {
   };
   process.on('SIGINT', handleSigint);
 
-  console.log(BANNER);
-  console.log(
-    `  ${bold(`v${version}`)}${dim('  Find the right AI coding agent for your project.')}`,
-  );
-  console.log(dim('  "My name is Alice, and I remember everything."'));
-  console.log();
+  try {
+    console.log(BANNER);
+    console.log(
+      `  ${bold(`v${version}`)}${dim('  Find the right AI coding agent for your project.')}`,
+    );
+    console.log(dim('  "My name is Alice, and I remember everything."'));
+    console.log();
 
-  let location: InstallLocation;
+    let location: InstallLocation;
 
-  if (args.includes('--global')) {
-    location = 'global';
-  } else if (args.includes('--local')) {
-    location = 'local';
-  } else {
-    if (!process.stdin.isTTY) {
-      console.error(
-        red('Non-interactive environment detected. Use --global or --local.'),
-      );
-      console.error(dim('  Example: npx alice-agents --global'));
-      closePrompts();
-      return process.exit(1) as never;
+    if (args.includes('--global')) {
+      location = 'global';
+    } else if (args.includes('--local')) {
+      location = 'local';
+    } else {
+      if (!process.stdin.isTTY) {
+        console.error(
+          red('Non-interactive environment detected. Use --global or --local.'),
+        );
+        console.error(dim('  Example: npx alice-agents --global'));
+        closePrompts();
+        return process.exit(1) as never;
+      }
+      const choice = await choose('  Where would you like to install?', [
+        `Global ${dim('(~/.claude)   — available in all projects')}`,
+        `Local  ${dim('(./.claude)  — this project only')}`,
+      ]);
+      location = choice === 0 ? 'global' : 'local';
     }
-    const choice = await choose('  Where would you like to install?', [
-      `Global ${dim('(~/.claude)   — available in all projects')}`,
-      `Local  ${dim('(./.claude)  — this project only')}`,
-    ]);
-    location = choice === 0 ? 'global' : 'local';
-  }
 
-  // Dry-run mode — show what would happen, then exit
-  if (args.includes('--dry-run')) {
-    showDryRun(location);
+    // Dry-run mode — show what would happen, then exit
+    if (args.includes('--dry-run')) {
+      showDryRun(location);
+      return;
+    }
+
+    const targetDir = getTargetDir(location);
+    const sourceRoot = getSourceRoot();
+
+    const commandsSrc = join(sourceRoot, 'src', 'commands');
+    const commandsDest = join(targetDir, 'commands', 'alice');
+
+    const workflowsSrc = join(sourceRoot, 'src', 'workflows');
+    const workflowsDest = join(targetDir, 'alice', 'workflows');
+
+    copyDir(commandsSrc, commandsDest);
+    console.log(`  ${green('✓')} Installed commands/alice`);
+
+    copyDir(workflowsSrc, workflowsDest);
+
+    registerHooks(location);
+    console.log(`  ${green('✓')} Registered hooks`);
+
+    if (location === 'local') {
+      const ignored = addIgnoreEntries(process.cwd());
+      if (ignored.length > 0) {
+        console.log(`  ${green('✓')} Updated ${ignored.join(', ')}`);
+      }
+    }
+
+    console.log();
+    console.log(`  ${green('✓ Alice installed.')}`);
+    console.log(
+      `    Run ${brightRed('/alice:init')} in Claude Code to get started.`,
+    );
+    console.log(
+      `    Run ${brightRed('/alice:help')} for a full command reference.`,
+    );
+    console.log(dim('    "The game has just begun."'));
+  } finally {
     closePrompts();
     process.removeListener('SIGINT', handleSigint);
-    return;
   }
-
-  const targetDir = getTargetDir(location);
-  const sourceRoot = getSourceRoot();
-
-  const commandsSrc = join(sourceRoot, 'src', 'commands');
-  const commandsDest = join(targetDir, 'commands', 'alice');
-
-  const workflowsSrc = join(sourceRoot, 'src', 'workflows');
-  const workflowsDest = join(targetDir, 'alice', 'workflows');
-
-  copyDir(commandsSrc, commandsDest);
-  console.log(`  ${green('✓')} Installed commands/alice`);
-
-  copyDir(workflowsSrc, workflowsDest);
-
-  registerHooks(location);
-  console.log(`  ${green('✓')} Registered hooks`);
-
-  if (location === 'local') {
-    const ignored = addIgnoreEntries(process.cwd());
-    if (ignored.length > 0) {
-      console.log(`  ${green('✓')} Updated ${ignored.join(', ')}`);
-    }
-  }
-
-  console.log();
-  console.log(`  ${green('✓ Alice installed.')}`);
-  console.log(
-    `    Run ${brightRed('/alice:init')} in Claude Code to get started.`,
-  );
-  console.log(
-    `    Run ${brightRed('/alice:help')} for a full command reference.`,
-  );
-  console.log(dim('    "The game has just begun."'));
-
-  closePrompts();
-  process.removeListener('SIGINT', handleSigint);
 };
 
 const isDirectRun =
