@@ -379,8 +379,22 @@ describe('printErrorHint', () => {
     vi.restoreAllMocks();
   });
 
-  it('suggests --local for permission errors', () => {
+  it('suggests --local for EACCES errors', () => {
     printErrorHint('EACCES: permission denied');
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('--local'),
+    );
+  });
+
+  it('suggests --local for EPERM errors', () => {
+    printErrorHint('EPERM: operation not permitted');
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('--local'),
+    );
+  });
+
+  it('handles mixed case permission messages', () => {
+    printErrorHint('Permission Denied on /usr/local');
     expect(console.error).toHaveBeenCalledWith(
       expect.stringContaining('--local'),
     );
