@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import { choose, closePrompts } from '~/prompts/prompts.js';
 import type { InstallLocation } from '~/types/install.js';
-import { bold, brightRed, dim, green, red } from '~/utils/ansi/ansi.js';
+import { bold, brightRed, dim, green, red, yellow } from '~/utils/ansi/ansi.js';
 import { copyDir } from '~/utils/fs/fs.js';
 import { addIgnoreEntries } from '~/utils/ignore/ignore.js';
 import { getVersion } from '~/utils/version/version.js';
@@ -292,10 +292,29 @@ export const install = async (): Promise<void> => {
 const isDirectRun =
   process.argv[1] && resolve(process.argv[1]).includes('install');
 
+/**
+ * Prints a contextual hint based on the error message to help the user recover.
+ *
+ * @param message - The error message string.
+ */
+/**
+ * Prints a contextual hint based on the error message to help the user recover.
+ *
+ * @param message - The error message string.
+ */
+export const printErrorHint = (message: string): void => {
+  if (message.includes('EACCES') || message.includes('permission')) {
+    console.error(yellow('  Try --local or check directory ownership.'));
+  } else if (message.includes('JSON') || message.includes('parse')) {
+    console.error(yellow('  Delete .claude/settings.json and re-run.'));
+  }
+};
+
 if (isDirectRun) {
   install().catch((err: unknown) => {
     const message = err instanceof Error ? err.message : String(err);
     console.error(red(`❌ Failed to install: ${message}`));
+    printErrorHint(message);
     closePrompts();
     process.exit(1);
   });

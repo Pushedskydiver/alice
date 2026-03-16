@@ -5,7 +5,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { getHomeDir, getTargetDir, install, registerHooks } from './install.js';
+import {
+  getHomeDir,
+  getTargetDir,
+  install,
+  printErrorHint,
+  registerHooks,
+} from './install.js';
 
 const makeTmpDir = (): string => {
   const dir = join(tmpdir(), `alice-test-${randomUUID()}`);
@@ -361,5 +367,62 @@ describe('install', () => {
     expect(console.error).toHaveBeenCalledWith(
       expect.stringContaining('Cannot use both'),
     );
+  });
+});
+
+describe('printErrorHint', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('suggests --local for permission errors', () => {
+    printErrorHint('EACCES: permission denied');
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('--local'),
+    );
+  });
+
+  it('suggests deleting settings.json for JSON errors', () => {
+    printErrorHint('Unexpected token in JSON');
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('settings.json'),
+    );
+  });
+
+  it('prints nothing for unknown errors', () => {
+    printErrorHint('something else went wrong');
+    expect(console.error).not.toHaveBeenCalled();
+  });
+});
+
+describe('install error handling', () => {
+  let tmp: string;
+  const originalArgv = process.argv;
+
+  beforeEach(() => {
+    tmp = makeTmpDir();
+    vi.spyOn(process, 'cwd').mockReturnValue(tmp);
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    process.argv = originalArgv;
+    vi.restoreAllMocks();
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  it('propagates copyDir errors', async () => {
+    process.argv = ['node', 'install.js', '--local'];
+
+    const fsModule = await import('~/utils/fs/fs.js');
+    vi.spyOn(fsModule, 'copyDir').mockImplementation(() => {
+      throw new Error('EACCES: permission denied');
+    });
+
+    await expect(install()).rejects.toThrow('EACCES');
   });
 });
