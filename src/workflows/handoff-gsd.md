@@ -40,4 +40,6 @@ Next steps:
 Docs: https://github.com/glittercowboy/get-shit-done
 ```
 
+Confirm before running any suggested command.
+
 Print: "Good luck."

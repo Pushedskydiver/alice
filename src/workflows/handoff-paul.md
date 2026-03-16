@@ -42,4 +42,6 @@ Next steps:
 Docs: https://github.com/ChristopherKahler/paul
 ```
 
+Confirm before running any suggested command.
+
 Print: "Good luck."

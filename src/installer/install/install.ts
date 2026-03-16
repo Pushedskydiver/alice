@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-import { join } from 'node:path';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 
 import { choose, closePrompts } from '~/prompts/prompts.js';
 import type { InstallLocation } from '~/types/install.js';
@@ -80,14 +79,14 @@ export const install = async (): Promise<void> => {
       location = choice === 0 ? 'global' : 'local';
     }
 
-    if (args.includes('--reinstall')) {
-      cleanExistingInstall(location);
-    }
-
     // Dry-run mode — show what would happen, then exit
     if (args.includes('--dry-run')) {
       showDryRun(location);
       return;
+    }
+
+    if (args.includes('--reinstall')) {
+      cleanExistingInstall(location);
     }
 
     const targetDir = getTargetDir(location);
