@@ -38,7 +38,11 @@ export const loadPreferences = (path?: string): Preferences => {
     const raw = readFileSync(filePath, 'utf-8');
     const parsed = parseJson<Preferences>(raw);
 
-    return parsed ?? {};
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return {};
+    }
+
+    return parsed;
   } catch {
     return {};
   }

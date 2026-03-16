@@ -94,7 +94,11 @@ export const install = async (): Promise<void> => {
           `Local  ${dim('(./.claude)  — this project only')}`,
         ]);
         location = choice === 0 ? 'global' : 'local';
-        savePreferences({ install_location: location });
+        try {
+          savePreferences({ install_location: location });
+        } catch {
+          // Best-effort — don't block install if preference can't be saved
+        }
       }
     }
 
