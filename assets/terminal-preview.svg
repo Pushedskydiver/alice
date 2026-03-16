@@ -38,7 +38,7 @@
     <text y="136" fill="#e05555" xml:space="preserve">  ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝╚══════╝</text>
 
     <!-- Version + tagline -->
-    <text y="172" fill="#e2e8f0">  <tspan font-weight="bold">v0.1.0</tspan><tspan fill="#8b5555">  Find the right AI coding agent for your project.</tspan></text>
+    <text y="172" fill="#e2e8f0">  <tspan font-weight="bold">v0.8.1</tspan><tspan fill="#8b5555">  Find the right AI coding agent for your project.</tspan></text>
     <text y="192" fill="#8b5555">  "My name is Alice, and I remember everything."</text>
 
     <!-- Interactive install prompt -->
@@ -63,22 +63,6 @@
 
   </g>
 
-  <!-- Rocket SVG icon — vertically centred with ALICE banner -->
-  <g transform="translate(390, 72) scale(1.8)">
-    <!-- Rocket body -->
-    <path d="M24 0 C24 0 30 8 30 20 L30 52 C30 56 18 56 18 52 L18 20 C18 8 24 0 24 0Z" fill="#e05555" opacity="0.9"/>
-    <!-- Nose cone highlight -->
-    <path d="M24 0 C24 0 27 8 27 18 L24 4Z" fill="#ff7777" opacity="0.4"/>
-    <!-- Window -->
-    <circle cx="24" cy="26" r="5" fill="#120c0c"/>
-    <circle cx="24" cy="26" r="3.5" fill="#8b5555" opacity="0.6"/>
-    <!-- Fins -->
-    <path d="M18 40 L10 56 L18 52Z" fill="#c04040"/>
-    <path d="M30 40 L38 56 L30 52Z" fill="#c04040"/>
-    <!-- Exhaust flames -->
-    <path d="M21 56 L24 68 L27 56Z" fill="#e0af68" opacity="0.8"/>
-    <path d="M22 56 L24 64 L26 56Z" fill="#f7768e" opacity="0.9"/>
-    <path d="M23 56 L24 60 L25 56Z" fill="#e2e8f0" opacity="0.7"/>
-  </g>
+
 
 </svg>

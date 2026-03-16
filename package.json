@@ -1,6 +1,6 @@
 {
   "name": "alice-agents",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Find the right AI coding agent for your project",
   "type": "module",
   "engines": {

@@ -7,6 +7,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
+## [0.8.1] — 2026-03-16
+
+### 💄 Style
+
+- **Terminal preview cleanup** — removed rocket ship graphic from `terminal-preview.svg`, updated version to v0.8.0
+
+---
+
 ## [0.8.0] — 2026-03-16
 
 ### ✨ Features
