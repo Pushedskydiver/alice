@@ -73,6 +73,13 @@ export const install = async (): Promise<void> => {
       location = 'global';
     } else if (args.includes('--local')) {
       location = 'local';
+    } else if (!process.stdin.isTTY) {
+      console.error(
+        red('Non-interactive environment detected. Use --global or --local.'),
+      );
+      console.error(dim('  Example: npx alice-agents --global'));
+      closePrompts();
+      return process.exit(1) as never;
     } else {
       const saved = getSavedLocation();
 
@@ -81,13 +88,6 @@ export const install = async (): Promise<void> => {
           `  Installing ${saved}ly ${dim(`(saved preference. Use --global or --local to override.)`)}`,
         );
         location = saved;
-      } else if (!process.stdin.isTTY) {
-        console.error(
-          red('Non-interactive environment detected. Use --global or --local.'),
-        );
-        console.error(dim('  Example: npx alice-agents --global'));
-        closePrompts();
-        return process.exit(1) as never;
       } else {
         const choice = await choose('  Where would you like to install?', [
           `Global ${dim('(~/.claude)   — available in all projects')}`,

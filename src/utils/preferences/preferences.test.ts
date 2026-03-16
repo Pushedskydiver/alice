@@ -72,4 +72,10 @@ describe('getSavedLocation', () => {
 
     expect(getSavedLocation(configPath)).toBe('global');
   });
+
+  it('returns undefined for invalid install location value', () => {
+    writeFileSync(configPath, JSON.stringify({ install_location: 'invalid' }));
+
+    expect(getSavedLocation(configPath)).toBeUndefined();
+  });
 });
